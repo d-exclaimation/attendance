@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+    id String @id @default(uuid())
+    name String @db.VarChar(255) @unique
+    attendances Attendance[]
+}
+
+model Attendance {
+    id String @id @default(uuid())
+    entryAt DateTime @default(now())
+    leaveAt DateTime?
+    user User @relation(fields: [userId], references: [id])
+    userId String @unique
+}
