@@ -15,6 +15,7 @@ type Query {
 }
 
 type User {
+  attendances: [Attendance!]!
   id: ID!
   name: String!
 }

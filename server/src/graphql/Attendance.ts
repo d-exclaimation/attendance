@@ -15,15 +15,7 @@ export const Attendance = objectType({
     t.string("leaveAt");
     t.nonNull.field("user", {
       type: "User",
-      resolve: async ({ userId }, _args, { db }) => {
-        const res = await db.user.findFirst({
-          where: { id: userId },
-        });
-
-        if (!res) throw new Error("Invalid user");
-
-        return res;
-      },
+      resolve: ({ userId }, _args, { userLoader }) => userLoader.load(userId),
     });
   },
 });

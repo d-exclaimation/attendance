@@ -63,6 +63,7 @@ export interface NexusGenFieldTypes {
     employees: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
+    attendances: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     id: string; // ID!
     name: string; // String!
   }
@@ -80,6 +81,7 @@ export interface NexusGenFieldTypeNames {
     employees: 'User'
   }
   User: { // field return type name
+    attendances: 'Attendance'
     id: 'ID'
     name: 'String'
   }

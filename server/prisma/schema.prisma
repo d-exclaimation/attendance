@@ -11,15 +11,15 @@ generator client {
 }
 
 model User {
-    id String @id @default(uuid())
-    name String @db.VarChar(255) @unique
-    attendances Attendance[]
+  id          String       @id @default(uuid())
+  name        String       @unique @db.VarChar(255)
+  attendances Attendance[]
 }
 
 model Attendance {
-    id String @id @default(uuid())
-    entryAt DateTime @default(now())
-    leaveAt DateTime?
-    user User @relation(fields: [userId], references: [id])
-    userId String @unique
+  id      String    @id @default(uuid())
+  entryAt DateTime  @default(now())
+  leaveAt DateTime?
+  user    User      @relation(fields: [userId], references: [id])
+  userId  String
 }

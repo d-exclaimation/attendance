@@ -1,11 +1,4 @@
 "use strict";
-//
-//  index.ts
-//  server
-//
-//  Created by d-exclaimation on 8:17 AM.
-//  Copyright © 2021 d-exclaimation. All rights reserved.
-//
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,43 +35,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var client_1 = require("@prisma/client");
-var apollo_server_express_1 = require("apollo-server-express");
-var express_1 = __importDefault(require("express"));
-var http_1 = require("http");
-var schema_1 = require("./schema");
-function main() {
-    return __awaiter(this, void 0, void 0, function () {
-        var prisma, app, httpServer, server, PORT;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    prisma = new client_1.PrismaClient();
-                    app = express_1.default();
-                    httpServer = http_1.createServer(app);
-                    server = new apollo_server_express_1.ApolloServer({
-                        schema: schema_1.schema,
-                        context: function (_a) {
-                            var req = _a.req;
-                            return ({ db: prisma, req: req });
-                        },
+exports.Attendance = void 0;
+//
+//  Attendance.ts
+//  server
+//
+//  Created by d-exclaimation on 09:41.
+//
+var nexus_1 = require("nexus");
+exports.Attendance = nexus_1.objectType({
+    name: "Attendance",
+    definition: function (t) {
+        var _this = this;
+        t.nonNull.id("id");
+        t.nonNull.string("userId");
+        t.nonNull.string("entryAt");
+        t.string("leaveAt");
+        t.nonNull.field("user", {
+            type: "User",
+            resolve: function (_a, _args, _b) {
+                var userId = _a.userId;
+                var db = _b.db, req = _b.req;
+                return __awaiter(_this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0:
+                                console.log(req.body);
+                                return [4 /*yield*/, db.user.findFirst({
+                                        where: { id: userId },
+                                    })];
+                            case 1:
+                                res = _c.sent();
+                                console.log("ok");
+                                if (!res)
+                                    throw new Error("Invalid user");
+                                return [2 /*return*/, res];
+                        }
                     });
-                    return [4 /*yield*/, server.start()];
-                case 1:
-                    _a.sent();
-                    server.applyMiddleware({ app: app });
-                    PORT = 4000;
-                    httpServer.listen(PORT, function () {
-                        console.log("Server starting at http://localhost:" + PORT);
-                    });
-                    prisma.$disconnect();
-                    return [2 /*return*/];
-            }
+                });
+            },
         });
-    });
-}
-main().catch(console.error);
+    },
+});
