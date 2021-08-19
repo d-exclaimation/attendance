@@ -5,6 +5,7 @@
 //  Created by d-exclaimation on 09:37.
 //
 import { extendType, nonNull, objectType } from "nexus";
+import { isEmployee } from "./../utils/auth";
 
 export const UserType = objectType({
   name: "User",
@@ -57,11 +58,15 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_source, { credential }, {}) => {
+      resolve: async (_source, { credential: { username, password } }, {}) => {
+        if (!isEmployee(password)) return { password: password };
+
         try {
-          if (credential.password === "exception") throw new Error("OK");
-          const user = { id: "ok", name: "Vincent" };
-          // const user = await db.user.create({
+          const user = { id: "ok", name: username };
+
+          // TODO: This should be replaced with fetching data from database and setting the session / JWT Auth
+          if (Math.random() < 0.3) throw "Fucked";
+          // const user = await db.user.find({
           //   data: {
           //     name: credential.username,
           //   },
@@ -69,7 +74,7 @@ export const UserMutation = extendType({
           return user;
         } catch (e: unknown) {
           return {
-            username: credential.username,
+            username: username,
           };
         }
       },
@@ -81,10 +86,13 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_src, { credential }, {}) => {
+      resolve: async (_src, { credential: { password, username } }, {}) => {
+        if (!isEmployee(password)) return { password };
         try {
-          if (credential.password === "exception") throw new Error("OK");
-          const user = { id: "ok", name: "Vincent" };
+          const user = { id: "ok", name: username };
+
+          // TODO: Perform mutation on the server and setting the session or JWT Auth
+          if (Math.random() < 0.2) throw "This fails boiii";
           // const user = await db.user.create({
           //   data: {
           //     name: credential.username,
@@ -93,7 +101,7 @@ export const UserMutation = extendType({
           return user;
         } catch (e: unknown) {
           return {
-            username: credential.username,
+            username: username,
           };
         }
       },
