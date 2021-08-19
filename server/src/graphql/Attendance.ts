@@ -6,8 +6,9 @@
 //
 import { objectType } from "nexus";
 
-export const Attendance = objectType({
+export const AttendanceType = objectType({
   name: "Attendance",
+  description: "Attendance timestamp for logging work hours",
   definition(t) {
     t.nonNull.id("id");
     t.nonNull.string("userId");

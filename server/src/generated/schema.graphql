@@ -2,6 +2,7 @@
 ### Do not make changes to this file directly
 
 
+"""Attendance timestamp for logging work hours"""
 type Attendance {
   entryAt: String!
   id: ID!
@@ -10,12 +11,52 @@ type Attendance {
   userId: String!
 }
 
-type Query {
-  employees: [User!]!
+"""User credentials"""
+input Credentials {
+  password: String!
+  username: String!
 }
 
+"""Result for indicating that the credentials are invalid"""
+type InvalidCredentials {
+  password: String!
+}
+
+"""Result of a log in mutation"""
+union LoginResult = InvalidCredentials | User | UserNotFound
+
+type Mutation {
+  """Log-in mutation with credentials"""
+  login(credential: Credentials!): LoginResult!
+
+  """Sign-up mutation with credentials"""
+  signup(credential: Credentials!): SignUpResult!
+}
+
+type Query {
+  """Gettings all employees"""
+  employees: [User!]!
+
+  """Me query"""
+  me: Boolean!
+}
+
+"""Result of a sign up mutation"""
+union SignUpResult = InvalidCredentials | User | UserAlreadyExist
+
+"""User object type for each employee signed-in"""
 type User {
   attendances: [Attendance!]!
   id: ID!
   name: String!
+}
+
+"""Result for indicating that user already exists"""
+type UserAlreadyExist {
+  username: String!
+}
+
+"""Result for indicating that no user of that credentials is found"""
+type UserNotFound {
+  username: String!
 }

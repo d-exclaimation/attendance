@@ -14,6 +14,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  Credentials: { // input type
+    password: string; // String!
+    username: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -34,10 +38,20 @@ export interface NexusGenObjects {
     leaveAt?: string | null; // String
     userId: string; // String!
   }
+  InvalidCredentials: { // root type
+    password: string; // String!
+  }
+  Mutation: {};
   Query: {};
   User: { // root type
     id: string; // ID!
     name: string; // String!
+  }
+  UserAlreadyExist: { // root type
+    username: string; // String!
+  }
+  UserNotFound: { // root type
+    username: string; // String!
   }
 }
 
@@ -45,9 +59,11 @@ export interface NexusGenInterfaces {
 }
 
 export interface NexusGenUnions {
+  LoginResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['User'] | NexusGenRootTypes['UserNotFound'];
+  SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['User'] | NexusGenRootTypes['UserAlreadyExist'];
 }
 
-export type NexusGenRootTypes = NexusGenObjects
+export type NexusGenRootTypes = NexusGenObjects & NexusGenUnions
 
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
@@ -59,13 +75,27 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User']; // User!
     userId: string; // String!
   }
+  InvalidCredentials: { // field return type
+    password: string; // String!
+  }
+  Mutation: { // field return type
+    login: NexusGenRootTypes['LoginResult']; // LoginResult!
+    signup: NexusGenRootTypes['SignUpResult']; // SignUpResult!
+  }
   Query: { // field return type
     employees: NexusGenRootTypes['User'][]; // [User!]!
+    me: boolean; // Boolean!
   }
   User: { // field return type
     attendances: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     id: string; // ID!
     name: string; // String!
+  }
+  UserAlreadyExist: { // field return type
+    username: string; // String!
+  }
+  UserNotFound: { // field return type
+    username: string; // String!
   }
 }
 
@@ -77,20 +107,44 @@ export interface NexusGenFieldTypeNames {
     user: 'User'
     userId: 'String'
   }
+  InvalidCredentials: { // field return type name
+    password: 'String'
+  }
+  Mutation: { // field return type name
+    login: 'LoginResult'
+    signup: 'SignUpResult'
+  }
   Query: { // field return type name
     employees: 'User'
+    me: 'Boolean'
   }
   User: { // field return type name
     attendances: 'Attendance'
     id: 'ID'
     name: 'String'
   }
+  UserAlreadyExist: { // field return type name
+    username: 'String'
+  }
+  UserNotFound: { // field return type name
+    username: 'String'
+  }
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    login: { // args
+      credential: NexusGenInputs['Credentials']; // Credentials!
+    }
+    signup: { // args
+      credential: NexusGenInputs['Credentials']; // Credentials!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
+  LoginResult: "InvalidCredentials" | "User" | "UserNotFound"
+  SignUpResult: "InvalidCredentials" | "User" | "UserAlreadyExist"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -98,7 +152,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 
@@ -106,11 +160,11 @@ export type NexusGenInterfaceNames = never;
 
 export type NexusGenScalarNames = keyof NexusGenScalars;
 
-export type NexusGenUnionNames = never;
+export type NexusGenUnionNames = keyof NexusGenUnions;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = never;
+export type NexusGenAbstractsUsingStrategyResolveType = "LoginResult" | "SignUpResult";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {
