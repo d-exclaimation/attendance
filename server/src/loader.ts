@@ -35,13 +35,16 @@ export const attendanceLoader: PrismaLoader<string, Attendance[]> = (prisma) =>
           in: indices.map((x) => x),
         },
       },
+      orderBy: {
+        entryAt: "desc",
+      },
     });
     const map = new Map<string, Attendance[]>();
 
-    res.forEach((x) => {
+    for (const x of res) {
       const prev = map.get(x.userId) ?? [];
       map.set(x.userId, [...prev, x]);
-    });
+    }
 
     return indices.map((i) => map.get(i) ?? []);
   });

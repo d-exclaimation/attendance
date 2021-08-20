@@ -23,7 +23,7 @@ type InvalidCredentials {
 }
 
 """Result of a log in mutation"""
-union LoginResult = InvalidCredentials | User | UserNotFound
+union LoginResult = InvalidCredentials | UserCredentials | UserNotFound
 
 type Mutation {
   """Log-in mutation with credentials"""
@@ -38,11 +38,11 @@ type Query {
   employees: [User!]!
 
   """Me query"""
-  me: Boolean!
+  me: User
 }
 
 """Result of a sign up mutation"""
-union SignUpResult = InvalidCredentials | User | UserAlreadyExist
+union SignUpResult = InvalidCredentials | UserAlreadyExist | UserCredentials
 
 """User object type for each employee signed-in"""
 type User {
@@ -54,6 +54,12 @@ type User {
 """Result for indicating that user already exists"""
 type UserAlreadyExist {
   username: String!
+}
+
+"""Wrapper for user with jwt"""
+type UserCredentials {
+  token: String!
+  user: User!
 }
 
 """Result for indicating that no user of that credentials is found"""

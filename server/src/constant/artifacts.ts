@@ -6,6 +6,7 @@
 //
 
 export const artifacts = {
-  password: "this_is_a_password",
-  adminPassword: "this_is_admin",
+  password: process.env["GLOBAL_PASSWORD"] ?? "this_is_a_password",
+  adminPassword: process.env["ADMIN_PASSWORD"] ?? "this_is_admin",
+  jwtSecret: process.env["JWT_SECRET"] ?? "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 };

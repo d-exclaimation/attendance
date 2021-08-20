@@ -5,8 +5,14 @@
 //  Created by d-exclaimation on 09:37.
 //
 import { extendType, nonNull, objectType } from "nexus";
-import { isEmployee } from "./../utils/auth";
+import {
+  isAdmin,
+  isEmployee,
+  isEmployeeOrAdmin,
+  signCredentials,
+} from "./../utils/auth";
 
+/** User schema */
 export const UserType = objectType({
   name: "User",
   description: "User object type for each employee signed-in",
@@ -15,7 +21,7 @@ export const UserType = objectType({
     t.nonNull.string("name");
     t.nonNull.list.nonNull.field("attendances", {
       type: "Attendance",
-      resolve: async ({ id }, _args, { db, attendanceLoader }) => {
+      resolve: async ({ id }, _args, { attendanceLoader }) => {
         const res = await attendanceLoader.load(id);
         return res.map((res) => ({
           ...res,
@@ -27,13 +33,15 @@ export const UserType = objectType({
   },
 });
 
+/** User section of Query */
 export const UserQuery = extendType({
   type: "Query",
   definition(t) {
     t.nonNull.list.nonNull.field("employees", {
       type: "User",
       description: "Gettings all employees",
-      resolve: async (_source, _arg, { db }) => {
+      resolve: async (_source, _arg, { db, session: { isLogin } }) => {
+        if (!isLogin) throw new Error("Invalid permission");
         const res = await db.user.findMany();
         return res.map(({ id, name }) => ({
           id,
@@ -42,13 +50,22 @@ export const UserQuery = extendType({
       },
     });
 
-    t.nonNull.boolean("me", {
+    t.field("me", {
+      type: "User",
       description: "Me query",
-      resolve: async () => true,
+      resolve: async (_s, _a, { session: { login } }) => {
+        try {
+          if (!login) return null;
+          return login;
+        } catch (e: unknown) {
+          return null;
+        }
+      },
     });
   },
 });
 
+/** User section of Mutation */
 export const UserMutation = extendType({
   type: "Mutation",
   definition(t) {
@@ -58,8 +75,17 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_source, { credential: { username, password } }, {}) => {
-        if (!isEmployee(password)) return { password: password };
+      resolve: async (_s, { credential }, {}) => {
+        const { username, password } = credential;
+        const _isEmployee = isEmployee(password);
+        const _isAdmin = isAdmin(password);
+
+        if (!_isAdmin && !_isEmployee) return { password };
+
+        if (_isAdmin) {
+          const admin = { id: password, name: "admin" };
+          return { user: admin, token: signCredentials(admin) };
+        }
 
         try {
           const user = { id: "ok", name: username };
@@ -71,10 +97,10 @@ export const UserMutation = extendType({
           //     name: credential.username,
           //   },
           // });
-          return user;
+          return { user, token: signCredentials(user) };
         } catch (e: unknown) {
           return {
-            username: username,
+            username,
           };
         }
       },
@@ -86,8 +112,9 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_src, { credential: { password, username } }, {}) => {
-        if (!isEmployee(password)) return { password };
+      resolve: async (_src, { credential }, {}) => {
+        const { password, username } = credential;
+        if (!isEmployeeOrAdmin(password)) return { password };
         try {
           const user = { id: "ok", name: username };
 
@@ -98,10 +125,11 @@ export const UserMutation = extendType({
           //     name: credential.username,
           //   },
           // });
-          return user;
+          return { user, token: signCredentials(user) };
         } catch (e: unknown) {
+          console.log(e);
           return {
-            username: username,
+            username,
           };
         }
       },

@@ -7,7 +7,8 @@
 
 import { objectType } from "nexus";
 
-export const UserAlreadyExist = objectType({
+/** Indicating user already exist and cannot perform operation */
+export const UserAlreadyExistType = objectType({
   name: "UserAlreadyExist",
   description: "Result for indicating that user already exists",
   definition(t) {
@@ -15,7 +16,8 @@ export const UserAlreadyExist = objectType({
   },
 });
 
-export const InvalidCredentials = objectType({
+/** Identifing that the credentials given are not valid */
+export const InvalidCredentialsType = objectType({
   name: "InvalidCredentials",
   description: "Result for indicating that the credentials are invalid",
   definition(t) {
@@ -23,7 +25,8 @@ export const InvalidCredentials = objectType({
   },
 });
 
-export const UserNotFound = objectType({
+/** Identifying that user is not found in the database */
+export const UserNotFoundType = objectType({
   name: "UserNotFound",
   description:
     "Result for indicating that no user of that credentials is found",

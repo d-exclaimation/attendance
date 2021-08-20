@@ -5,9 +5,15 @@
 //  Created by d-exclaimation on 23:14.
 //
 import { PrismaClient, User } from "@prisma/client";
-import { Failure, Return, Try } from "../models/Try";
+import { Failure, Ok, Try } from "../models/Try";
 
-async function signUp(
+/**
+ * Sign Up a new user but return a error safe result.
+ * @param db Database client.
+ * @param input Required input
+ * @returns A new error handled user
+ */
+export async function signUp(
   db: PrismaClient,
   input: { name: string }
 ): Promise<Try<User>> {
@@ -16,12 +22,8 @@ async function signUp(
       data: input,
     });
 
-    return Return(res);
+    return Ok(res);
   } catch (e: unknown) {
     return Failure(e);
   }
 }
-
-export const mutations = {
-  signUp,
-};

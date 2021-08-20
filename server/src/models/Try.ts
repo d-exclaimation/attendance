@@ -6,19 +6,19 @@
 //
 
 export type Try<T> =
-  | { type: "success"; data: T }
-  | { type: "failure"; error: unknown };
+  | { type: "ok"; data: T }
+  | { type: "error"; error: unknown };
 
-export function Return<T>(data: T): Try<T> {
+export function Ok<T>(data: T): Try<T> {
   return {
-    type: "success",
+    type: "ok",
     data,
   };
 }
 
 export function Failure<T>(error: unknown): Try<T> {
   return {
-    type: "failure",
+    type: "error",
     error,
   };
 }
@@ -33,9 +33,9 @@ export function matchTry<T, R>(
   { success, failure }: ResultMatcher<T, R>
 ): R {
   switch (t.type) {
-    case "success":
+    case "ok":
       return success(t.data);
-    case "failure":
+    case "error":
       return failure(t.error);
     default:
       return failure(new Error("Nothing"));

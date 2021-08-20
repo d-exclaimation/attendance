@@ -2,11 +2,14 @@
 //  Credentials.ts
 //  server
 //
-//  Created by d-exclaimation on 15:49.
+//  Created by d-exclaimation on 17:24.
 //
-import { inputObjectType, unionType } from "nexus";
+import { inputObjectType, objectType, unionType } from "nexus";
 
-export const Credentials = inputObjectType({
+/**
+ * User inputed Credentials Object
+ */
+export const CredentialsType = inputObjectType({
   name: "Credentials",
   description: "User credentials",
   definition(t) {
@@ -15,11 +18,27 @@ export const Credentials = inputObjectType({
   },
 });
 
-export const SignUpResult = unionType({
+/**
+ * Server credential payload
+ */
+export const UserCredentialsType = objectType({
+  name: "UserCredentials",
+  description: "Wrapper for user with jwt",
+  definition(t) {
+    t.nonNull.field("user", {
+      type: "User",
+    });
+
+    t.nonNull.string("token");
+  },
+});
+
+/** Possible Sign Up result handled in a GraphQL Smart manner */
+export const SignUpResultType = unionType({
   name: "SignUpResult",
   description: "Result of a sign up mutation",
   definition(t) {
-    t.members("User", "UserAlreadyExist", "InvalidCredentials");
+    t.members("UserCredentials", "UserAlreadyExist", "InvalidCredentials");
   },
   resolveType: (item) => {
     const __typename =
@@ -27,8 +46,8 @@ export const SignUpResult = unionType({
         ? "UserAlreadyExist"
         : "password" in item
         ? "InvalidCredentials"
-        : "id" in item
-        ? "User"
+        : "token" in item
+        ? "UserCredentials"
         : null;
 
     if (!__typename) throw new Error("Cannot resolve union type");
@@ -37,11 +56,12 @@ export const SignUpResult = unionType({
   },
 });
 
-export const LoginResult = unionType({
+/** Possible Login Result handled in a GraphQL Smart manner */
+export const LoginResultType = unionType({
   name: "LoginResult",
   description: "Result of a log in mutation",
   definition(t) {
-    t.members("User", "UserNotFound", "InvalidCredentials");
+    t.members("UserCredentials", "UserNotFound", "InvalidCredentials");
   },
   resolveType: (item) => {
     const __typename =
@@ -49,8 +69,8 @@ export const LoginResult = unionType({
         ? "UserNotFound"
         : "password" in item
         ? "InvalidCredentials"
-        : "id" in item
-        ? "User"
+        : "token" in item
+        ? "UserCredentials"
         : null;
 
     if (!__typename) throw new Error("Cannot resolve union type");

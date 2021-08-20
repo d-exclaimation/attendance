@@ -6,6 +6,7 @@
 //
 import { objectType } from "nexus";
 
+/** Attendance record */
 export const AttendanceType = objectType({
   name: "Attendance",
   description: "Attendance timestamp for logging work hours",

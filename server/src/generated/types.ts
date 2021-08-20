@@ -50,6 +50,10 @@ export interface NexusGenObjects {
   UserAlreadyExist: { // root type
     username: string; // String!
   }
+  UserCredentials: { // root type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   UserNotFound: { // root type
     username: string; // String!
   }
@@ -59,8 +63,8 @@ export interface NexusGenInterfaces {
 }
 
 export interface NexusGenUnions {
-  LoginResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['User'] | NexusGenRootTypes['UserNotFound'];
-  SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['User'] | NexusGenRootTypes['UserAlreadyExist'];
+  LoginResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserCredentials'] | NexusGenRootTypes['UserNotFound'];
+  SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserAlreadyExist'] | NexusGenRootTypes['UserCredentials'];
 }
 
 export type NexusGenRootTypes = NexusGenObjects & NexusGenUnions
@@ -84,7 +88,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     employees: NexusGenRootTypes['User'][]; // [User!]!
-    me: boolean; // Boolean!
+    me: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
     attendances: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
@@ -93,6 +97,10 @@ export interface NexusGenFieldTypes {
   }
   UserAlreadyExist: { // field return type
     username: string; // String!
+  }
+  UserCredentials: { // field return type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
   }
   UserNotFound: { // field return type
     username: string; // String!
@@ -116,7 +124,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     employees: 'User'
-    me: 'Boolean'
+    me: 'User'
   }
   User: { // field return type name
     attendances: 'Attendance'
@@ -125,6 +133,10 @@ export interface NexusGenFieldTypeNames {
   }
   UserAlreadyExist: { // field return type name
     username: 'String'
+  }
+  UserCredentials: { // field return type name
+    token: 'String'
+    user: 'User'
   }
   UserNotFound: { // field return type name
     username: 'String'
@@ -143,8 +155,8 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  LoginResult: "InvalidCredentials" | "User" | "UserNotFound"
-  SignUpResult: "InvalidCredentials" | "User" | "UserAlreadyExist"
+  LoginResult: "InvalidCredentials" | "UserCredentials" | "UserNotFound"
+  SignUpResult: "InvalidCredentials" | "UserAlreadyExist" | "UserCredentials"
 }
 
 export interface NexusGenTypeInterfaces {
