@@ -5,6 +5,7 @@
 //  Created by d-exclaimation on 09:37.
 //
 import { extendType, nonNull, objectType } from "nexus";
+import { isAuth } from "../utils/isAuth";
 import {
   isAdmin,
   isEmployee,
@@ -40,8 +41,8 @@ export const UserQuery = extendType({
     t.nonNull.list.nonNull.field("employees", {
       type: "User",
       description: "Gettings all employees",
-      resolve: async (_source, _arg, { db, session: { isLogin } }) => {
-        if (!isLogin) throw new Error("Invalid permission");
+      authorize: isAuth,
+      resolve: async (_source, _arg, { db }) => {
         const res = await db.user.findMany();
         return res.map(({ id, name }) => ({
           id,
@@ -53,11 +54,13 @@ export const UserQuery = extendType({
     t.field("me", {
       type: "User",
       description: "Me query",
-      resolve: async (_s, _a, { session: { login } }) => {
+      resolve: async (_s, _a, { session, db }) => {
         try {
-          if (!login) return null;
-          return login;
-        } catch (e: unknown) {
+          if (!session) return null;
+          return await db.user.findFirst({
+            where: { id: session.id },
+          });
+        } catch (_) {
           return null;
         }
       },
@@ -75,7 +78,7 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_s, { credential }, {}) => {
+      resolve: async (_s, { credential }, { db }) => {
         const { username, password } = credential;
         const _isEmployee = isEmployee(password);
         const _isAdmin = isAdmin(password);
@@ -84,20 +87,18 @@ export const UserMutation = extendType({
 
         if (_isAdmin) {
           const admin = { id: password, name: "admin" };
-          return { user: admin, token: signCredentials(admin) };
+          return { user: admin, ...signCredentials(admin) };
         }
 
         try {
-          const user = { id: "ok", name: username };
+          const user = await db.user.findFirst({
+            where: {
+              name: username,
+            },
+          });
+          if (!user) return { username };
 
-          // TODO: This should be replaced with fetching data from database and setting the session / JWT Auth
-          if (Math.random() < 0.3) throw "Fucked";
-          // const user = await db.user.find({
-          //   data: {
-          //     name: credential.username,
-          //   },
-          // });
-          return { user, token: signCredentials(user) };
+          return { user, ...signCredentials(user) };
         } catch (e: unknown) {
           return {
             username,
@@ -112,22 +113,17 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_src, { credential }, {}) => {
+      resolve: async (_src, { credential }, { db }) => {
         const { password, username } = credential;
         if (!isEmployeeOrAdmin(password)) return { password };
         try {
-          const user = { id: "ok", name: username };
-
-          // TODO: Perform mutation on the server and setting the session or JWT Auth
-          if (Math.random() < 0.2) throw "This fails boiii";
-          // const user = await db.user.create({
-          //   data: {
-          //     name: credential.username,
-          //   },
-          // });
-          return { user, token: signCredentials(user) };
+          const user = await db.user.create({
+            data: {
+              name: username,
+            },
+          });
+          return { user, ...signCredentials(user) };
         } catch (e: unknown) {
-          console.log(e);
           return {
             username,
           };

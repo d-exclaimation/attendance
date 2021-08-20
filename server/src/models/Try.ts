@@ -5,10 +5,18 @@
 //  Created by d-exclaimation on 23:19.
 //
 
+/**
+ * Try wrapper to safely handle error
+ */
 export type Try<T> =
   | { type: "ok"; data: T }
   | { type: "error"; error: unknown };
 
+/**
+ * Create a new "ok" Try
+ * @param data Successful data.
+ * @returns Try of the same type of data.
+ */
 export function Ok<T>(data: T): Try<T> {
   return {
     type: "ok",
@@ -16,28 +24,14 @@ export function Ok<T>(data: T): Try<T> {
   };
 }
 
+/**
+ * Create a new "error" Try.
+ * @param error Any error type.
+ * @returns Try of any type.
+ */
 export function Failure<T>(error: unknown): Try<T> {
   return {
     type: "error",
     error,
   };
-}
-
-type ResultMatcher<T, K> = {
-  success: (data: T) => K;
-  failure: (err: unknown) => K;
-};
-
-export function matchTry<T, R>(
-  t: Try<T>,
-  { success, failure }: ResultMatcher<T, R>
-): R {
-  switch (t.type) {
-    case "ok":
-      return success(t.data);
-    case "error":
-      return failure(t.error);
-    default:
-      return failure(new Error("Nothing"));
-  }
 }

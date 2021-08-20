@@ -30,6 +30,7 @@ export const UserCredentialsType = objectType({
     });
 
     t.nonNull.string("token");
+    t.nonNull.string("expireAt");
   },
 });
 

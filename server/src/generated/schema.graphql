@@ -58,6 +58,7 @@ type UserAlreadyExist {
 
 """Wrapper for user with jwt"""
 type UserCredentials {
+  expireAt: String!
   token: String!
   user: User!
 }

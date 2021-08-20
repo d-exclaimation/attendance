@@ -17,7 +17,4 @@ export interface Context {
   session: Session;
 }
 
-export interface Session {
-  login: User | null;
-  isLogin: boolean;
-}
+export type Session = User | null;
