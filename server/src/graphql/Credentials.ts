@@ -79,3 +79,45 @@ export const LoginResultType = unionType({
     return __typename;
   },
 });
+
+/** No Token found */
+export const NoTokenType = objectType({
+  name: "NoToken",
+  description: "No token found",
+  definition(t) {
+    t.nonNull.string("message");
+  },
+});
+
+/** Access token and friends without the user */
+export const AccessCredentialsType = objectType({
+  name: "AccessCredentials",
+  description: "Access token and friends without the user",
+  definition(t) {
+    t.nonNull.string("token");
+    t.nonNull.string("expireAt");
+  },
+});
+
+/** Refreshing result */
+export const RefreshResultType = unionType({
+  name: "RefreshResult",
+  description: "Result of refreshing a token",
+  definition(t) {
+    t.members("UserNotFound", "AccessCredentials", "NoToken");
+  },
+  resolveType: (item) => {
+    const __typename =
+      "username" in item
+        ? "UserNotFound"
+        : "message" in item
+        ? "NoToken"
+        : "token" in item
+        ? "AccessCredentials"
+        : null;
+
+    if (!__typename) throw new Error("Cannot resolve union type");
+
+    return __typename;
+  },
+});

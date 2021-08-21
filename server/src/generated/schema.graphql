@@ -2,6 +2,12 @@
 ### Do not make changes to this file directly
 
 
+"""Access token and friends without the user"""
+type AccessCredentials {
+  expireAt: String!
+  token: String!
+}
+
 """Attendance timestamp for logging work hours"""
 type Attendance {
   entryAt: String!
@@ -29,17 +35,28 @@ type Mutation {
   """Log-in mutation with credentials"""
   login(credential: Credentials!): LoginResult!
 
+  """Refresh token query"""
+  refresh: RefreshResult
+
   """Sign-up mutation with credentials"""
   signup(credential: Credentials!): SignUpResult!
+}
+
+"""No token found"""
+type NoToken {
+  message: String!
 }
 
 type Query {
   """Gettings all employees"""
   employees: [User!]!
 
-  """Me query"""
+  """Me  query"""
   me: User
 }
+
+"""Result of refreshing a token"""
+union RefreshResult = AccessCredentials | NoToken | UserNotFound
 
 """Result of a sign up mutation"""
 union SignUpResult = InvalidCredentials | UserAlreadyExist | UserCredentials

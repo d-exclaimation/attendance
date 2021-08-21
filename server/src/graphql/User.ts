@@ -10,6 +10,7 @@ import {
   isAdmin,
   isEmployee,
   isEmployeeOrAdmin,
+  refreshCredentials,
   setRefreshCookie,
   signCredentials,
 } from "./../utils/auth";
@@ -54,7 +55,7 @@ export const UserQuery = extendType({
 
     t.field("me", {
       type: "User",
-      description: "Me query",
+      description: "Me  query",
       resolve: async (_s, _a, { session, db }) => {
         try {
           if (!session) return null;
@@ -121,6 +122,21 @@ export const UserMutation = extendType({
         } catch (e: unknown) {
           return { username };
         }
+      },
+    });
+
+    t.field("refresh", {
+      type: "RefreshResult",
+      description: "Refresh token query",
+      resolve: async (_s, _a, { session, db, req }) => {
+        const refreshToken = req.cookies.jid;
+        if (!refreshToken) {
+          return { message: "Cannot find the refresh token" };
+        }
+        const access = await refreshCredentials(db, refreshToken);
+        if (!access) return { username: session?.name ?? "not found" };
+
+        return access;
       },
     });
   },

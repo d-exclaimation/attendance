@@ -8,14 +8,12 @@
 import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import { __port__, __prod__ } from "./constant/environment";
 import { Context } from "./context";
 import { applyMiddleware } from "./middlewares/applyMiddleware";
 import { schema } from "./schema";
-import { refreshCredentials } from "./utils/auth";
 
 async function main() {
   const prisma = new PrismaClient({
@@ -28,16 +26,7 @@ async function main() {
     origin: ["https://studio.apollographql.com"],
   };
 
-  app.use(cors(corsOptions));
   app.use(cookieParser());
-  app.post("/refresh", async (req, res) => {
-    const refreshToken = req.cookies.jid;
-    if (!refreshToken) return res.send({ ok: false, access: null });
-
-    const access = await refreshCredentials(prisma, refreshToken);
-
-    res.send({ ok: !!access, access });
-  });
 
   const server = new ApolloServer({
     schema,

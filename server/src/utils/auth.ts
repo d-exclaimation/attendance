@@ -77,10 +77,12 @@ export const unsignToken = async <T extends object>(
   return res.type == "ok" ? (res.data as T) : null;
 };
 
+/** Refresh Permission */
 type RefreshPermission = {
   tid: string;
 };
 
+/** Refresh Cookie with new refresh token */
 export const setRefreshCookie = (res: Response, t: RefreshPermission) => {
   const { refreshSecret } = artifacts;
   const expiration = 60 * 60 * 24 * 7;
@@ -94,6 +96,7 @@ export const setRefreshCookie = (res: Response, t: RefreshPermission) => {
   });
 };
 
+/** Refresh credentials */
 export const refreshCredentials = async (
   prisma: PrismaClient,
   token: string
