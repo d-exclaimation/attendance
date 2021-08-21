@@ -4,6 +4,8 @@
 //
 //  Created by d-exclaimation on 22:57.
 //
+import { PrismaClient } from "@prisma/client";
+import { Response } from "express";
 import { IncomingHttpHeaders } from "http";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Failure, Ok, Try } from "../models/Try";
@@ -44,7 +46,7 @@ export const getAuthorizationKey = (headers: IncomingHttpHeaders) => {
  */
 export const signCredentials = <T extends object>(obj: T) => {
   const { jwtSecret } = artifacts;
-  const expiration = 60 * 60 * 24 * 14;
+  const expiration = 60 * 60;
   const expireAt = new Date(
     new Date().getTime() + 1000 * expiration
   ).toISOString();
@@ -73,4 +75,48 @@ export const unsignToken = async <T extends object>(
   );
 
   return res.type == "ok" ? (res.data as T) : null;
+};
+
+type RefreshPermission = {
+  tid: string;
+};
+
+export const setRefreshCookie = (res: Response, t: RefreshPermission) => {
+  const { refreshSecret } = artifacts;
+  const expiration = 60 * 60 * 24 * 7;
+  const token = jwt.sign(t, refreshSecret, {
+    expiresIn: expiration,
+  });
+  res.cookie("jid", token, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+};
+
+export const refreshCredentials = async (
+  prisma: PrismaClient,
+  token: string
+) => {
+  const { refreshSecret, adminPassword } = artifacts;
+  const res: Try<JwtPayload> = await new Promise((resolve) =>
+    jwt.verify(token, refreshSecret, (err, result) => {
+      if (err || !result) resolve(Failure(err));
+      else resolve(Ok(result));
+    })
+  );
+  if (res.type == "error") return null;
+  try {
+    const { tid } = res.data as RefreshPermission;
+    // For admins
+    if (isAdmin(tid)) {
+      return signCredentials({ id: adminPassword, name: "admin" });
+    }
+
+    const user = await prisma.user.findFirst({ where: { id: tid } });
+    if (!user) return null;
+    return signCredentials(user);
+  } catch (e) {
+    return null;
+  }
 };

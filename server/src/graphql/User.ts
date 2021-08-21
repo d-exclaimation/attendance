@@ -10,6 +10,7 @@ import {
   isAdmin,
   isEmployee,
   isEmployeeOrAdmin,
+  setRefreshCookie,
   signCredentials,
 } from "./../utils/auth";
 
@@ -57,6 +58,8 @@ export const UserQuery = extendType({
       resolve: async (_s, _a, { session, db }) => {
         try {
           if (!session) return null;
+          if (isAdmin(session.id)) return session;
+
           return await db.user.findFirst({
             where: { id: session.id },
           });
@@ -78,7 +81,7 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_s, { credential }, { db }) => {
+      resolve: async (_s, { credential }, { db, res }) => {
         const { username, password } = credential;
         const _isEmployee = isEmployee(password);
         const _isAdmin = isAdmin(password);
@@ -87,22 +90,18 @@ export const UserMutation = extendType({
 
         if (_isAdmin) {
           const admin = { id: password, name: "admin" };
+          setRefreshCookie(res, { tid: password });
           return { user: admin, ...signCredentials(admin) };
         }
 
         try {
-          const user = await db.user.findFirst({
-            where: {
-              name: username,
-            },
-          });
+          const user = await db.user.findFirst({ where: { name: username } });
           if (!user) return { username };
 
+          setRefreshCookie(res, { tid: user.id });
           return { user, ...signCredentials(user) };
-        } catch (e: unknown) {
-          return {
-            username,
-          };
+        } catch (_: unknown) {
+          return { username };
         }
       },
     });
@@ -117,16 +116,10 @@ export const UserMutation = extendType({
         const { password, username } = credential;
         if (!isEmployeeOrAdmin(password)) return { password };
         try {
-          const user = await db.user.create({
-            data: {
-              name: username,
-            },
-          });
+          const user = await db.user.create({ data: { name: username } });
           return { user, ...signCredentials(user) };
         } catch (e: unknown) {
-          return {
-            username,
-          };
+          return { username };
         }
       },
     });

@@ -12,7 +12,7 @@ import { Context } from "./../context";
 import { loginMiddleware } from "./loginMiddleware";
 
 export async function applyMiddleware(
-  { req }: ExpressContext,
+  { req, res }: ExpressContext,
   prisma: PrismaClient
 ): Promise<Context> {
   return {
@@ -20,6 +20,7 @@ export async function applyMiddleware(
     userLoader: userLoader(prisma),
     attendanceLoader: attendanceLoader(prisma),
     req,
+    res,
     session: await loginMiddleware(req.headers),
   };
 }
