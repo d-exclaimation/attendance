@@ -89,6 +89,8 @@ export const setRefreshCookie = (res: Response, t: RefreshPermission) => {
   const token = jwt.sign(t, refreshSecret, {
     expiresIn: expiration,
   });
+
+  console.log(`jid: ${token}`);
   res.cookie("jid", token, {
     httpOnly: true,
     sameSite: "none",

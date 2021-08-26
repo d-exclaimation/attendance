@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 09:37.
 //
 import { extendType, nonNull, objectType } from "nexus";
-import { isAuth } from "../utils/isAuth";
+import { isAuthAdmin } from "../utils/isAuth";
 import {
   isAdmin,
   isEmployee,
@@ -43,7 +43,7 @@ export const UserQuery = extendType({
     t.nonNull.list.nonNull.field("employees", {
       type: "User",
       description: "Gettings all employees",
-      authorize: isAuth,
+      authorize: isAuthAdmin,
       resolve: async (_source, _arg, { db }) => {
         const res = await db.user.findMany();
         return res.map(({ id, name }) => ({

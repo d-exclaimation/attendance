@@ -106,7 +106,9 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     employees: NexusGenRootTypes['User'][]; // [User!]!
+    history: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     me: NexusGenRootTypes['User'] | null; // User
+    state: NexusGenRootTypes['Attendance'] | null; // Attendance
   }
   User: { // field return type
     attendances: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
@@ -151,7 +153,9 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     employees: 'User'
+    history: 'Attendance'
     me: 'User'
+    state: 'Attendance'
   }
   User: { // field return type name
     attendances: 'Attendance'
@@ -178,6 +182,11 @@ export interface NexusGenArgTypes {
     }
     signup: { // args
       credential: NexusGenInputs['Credentials']; // Credentials!
+    }
+  }
+  Query: {
+    history: { // args
+      last: number; // Int!
     }
   }
 }

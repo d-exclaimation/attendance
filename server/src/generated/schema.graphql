@@ -50,9 +50,11 @@ type NoToken {
 type Query {
   """Gettings all employees"""
   employees: [User!]!
+  history(last: Int!): [Attendance!]!
 
   """Me  query"""
   me: User
+  state: Attendance
 }
 
 """Result of refreshing a token"""
