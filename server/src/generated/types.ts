@@ -50,6 +50,9 @@ export interface NexusGenObjects {
   NoToken: { // root type
     message: string; // String!
   }
+  NotClockedIn: { // root type
+    message: string; // String!
+  }
   Query: {};
   User: { // root type
     id: string; // ID!
@@ -72,6 +75,8 @@ export interface NexusGenInterfaces {
 }
 
 export interface NexusGenUnions {
+  ClockIn: NexusGenRootTypes['Attendance'] | NexusGenRootTypes['UserNotFound'];
+  ClockOut: NexusGenRootTypes['Attendance'] | NexusGenRootTypes['NotClockedIn'] | NexusGenRootTypes['UserNotFound'];
   LoginResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserCredentials'] | NexusGenRootTypes['UserNotFound'];
   RefreshResult: NexusGenRootTypes['AccessCredentials'] | NexusGenRootTypes['NoToken'] | NexusGenRootTypes['UserNotFound'];
   SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserAlreadyExist'] | NexusGenRootTypes['UserCredentials'];
@@ -97,11 +102,16 @@ export interface NexusGenFieldTypes {
     password: string; // String!
   }
   Mutation: { // field return type
+    clockIn: NexusGenRootTypes['ClockIn']; // ClockIn!
+    clockOut: NexusGenRootTypes['ClockOut']; // ClockOut!
     login: NexusGenRootTypes['LoginResult']; // LoginResult!
     refresh: NexusGenRootTypes['RefreshResult'] | null; // RefreshResult
     signup: NexusGenRootTypes['SignUpResult']; // SignUpResult!
   }
   NoToken: { // field return type
+    message: string; // String!
+  }
+  NotClockedIn: { // field return type
     message: string; // String!
   }
   Query: { // field return type
@@ -144,11 +154,16 @@ export interface NexusGenFieldTypeNames {
     password: 'String'
   }
   Mutation: { // field return type name
+    clockIn: 'ClockIn'
+    clockOut: 'ClockOut'
     login: 'LoginResult'
     refresh: 'RefreshResult'
     signup: 'SignUpResult'
   }
   NoToken: { // field return type name
+    message: 'String'
+  }
+  NotClockedIn: { // field return type name
     message: 'String'
   }
   Query: { // field return type name
@@ -177,6 +192,9 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    clockOut: { // args
+      id: string; // ID!
+    }
     login: { // args
       credential: NexusGenInputs['Credentials']; // Credentials!
     }
@@ -192,6 +210,8 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  ClockIn: "Attendance" | "UserNotFound"
+  ClockOut: "Attendance" | "NotClockedIn" | "UserNotFound"
   LoginResult: "InvalidCredentials" | "UserCredentials" | "UserNotFound"
   RefreshResult: "AccessCredentials" | "NoToken" | "UserNotFound"
   SignUpResult: "InvalidCredentials" | "UserAlreadyExist" | "UserCredentials"
@@ -214,7 +234,7 @@ export type NexusGenUnionNames = keyof NexusGenUnions;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = "LoginResult" | "RefreshResult" | "SignUpResult";
+export type NexusGenAbstractsUsingStrategyResolveType = "ClockIn" | "ClockOut" | "LoginResult" | "RefreshResult" | "SignUpResult";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

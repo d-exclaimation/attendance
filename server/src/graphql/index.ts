@@ -6,6 +6,7 @@
 //
 
 export * from "./Attendance";
+export * from "./Clock";
 export * from "./Credentials";
 export * from "./FailedResult";
 export * from "./User";

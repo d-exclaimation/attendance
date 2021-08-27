@@ -55,7 +55,7 @@ export const UserQuery = extendType({
 
     t.field("me", {
       type: "User",
-      description: "Me  query",
+      description: "Check for user data",
       resolve: async (_s, _a, { session, db }) => {
         try {
           if (!session) return null;

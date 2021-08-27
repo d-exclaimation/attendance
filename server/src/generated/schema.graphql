@@ -17,6 +17,12 @@ type Attendance {
   userId: String!
 }
 
+"""Attendance clock in possible outcome"""
+union ClockIn = Attendance | UserNotFound
+
+"""Attendance clock out possible outcome"""
+union ClockOut = Attendance | NotClockedIn | UserNotFound
+
 """User credentials"""
 input Credentials {
   password: String!
@@ -32,6 +38,14 @@ type InvalidCredentials {
 union LoginResult = InvalidCredentials | UserCredentials | UserNotFound
 
 type Mutation {
+  """
+  Perform clock in and create a new record (Will not invalidate last un-clocked out record)
+  """
+  clockIn: ClockIn!
+
+  """Perform clock out if possible"""
+  clockOut(id: ID!): ClockOut!
+
   """Log-in mutation with credentials"""
   login(credential: Credentials!): LoginResult!
 
@@ -47,13 +61,22 @@ type NoToken {
   message: String!
 }
 
+"""Not yet clocked in"""
+type NotClockedIn {
+  message: String!
+}
+
 type Query {
   """Gettings all employees"""
   employees: [User!]!
+
+  """Get last x attendance records"""
   history(last: Int!): [Attendance!]!
 
-  """Me  query"""
+  """Check for user data"""
   me: User
+
+  """Get the last record whether it exist or not"""
   state: Attendance
 }
 

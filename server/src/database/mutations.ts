@@ -4,7 +4,7 @@
 //
 //  Created by d-exclaimation on 23:14.
 //
-import { PrismaClient, User } from "@prisma/client";
+import { Attendance, PrismaClient, User } from "@prisma/client";
 import { Failure, Ok, Try } from "../models/Try";
 
 /**
@@ -24,6 +24,28 @@ export async function signUp(
 
     return Ok(res);
   } catch (e: unknown) {
+    return Failure(e);
+  }
+}
+
+/**
+ * Create a new attendance record.
+ * @param db Database client.
+ * @param uid User ID.
+ * @returns A Try of Attendance
+ */
+export async function clockIn(
+  db: PrismaClient,
+  uid: string
+): Promise<Try<Attendance>> {
+  try {
+    const res = await db.attendance.create({
+      data: {
+        userId: uid,
+      },
+    });
+    return Ok(res);
+  } catch (e) {
     return Failure(e);
   }
 }
