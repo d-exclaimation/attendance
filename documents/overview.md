@@ -55,12 +55,15 @@ type UserCredentials {
 ```json
 {
   "data": {
-    "user": {
-      "id": "<uid>",
-      "name": "<name>"
-    },
-    "token": "<access-token>",
-    "expireAt": "<expiration-date>"
+    "login": {
+      "__typename": "UserCredentials",
+      "user": {
+        "id": "<uid>",
+        "name": "<name>"
+      },
+      "token": "<access-token>",
+      "expireAt": "<expiration-date>"
+    }
   }
 }
 ```
@@ -82,9 +85,30 @@ The process will be perform without too much hassle on the client side. If the e
 
 The server will read the refresh token from the cookie header and validate it.
 
+
+```graphql
+"""Access token and friends without the user"""
+type AccessCredentials {
+  expireAt: String!
+  token: String!
+}
+```
+
+```json
+{
+  "data": {
+    "refresh": {
+      "__typename": "AccessCredentials",
+      "token": "<access-token>",
+      "expireAt": "<expiration-date>"
+    }
+  }
+}
+```
+
 **If Successful**
 
-The server will respond similarly to the `Login/Signup` process with the correct user credentials
+The server will respond similarly to the `Login/Signup` process with the correct user credentials.
 
 **If Failure**
 
@@ -100,6 +124,160 @@ _<sub>Process diagram for login, sign up, and refreshing access token</sub>_
 
 ### Scenario 2: Authentication handling on the client-side
 
+#### `Main access token after login / sign up / refresh.`
+
+The server will give the access token from a GraphQL mutation. The GraphQL Client (Most likely urql) will then manage all the caches including invalidating the old values and save the new values. On the same time, the client will also save the access token in a local memory to be used for the next request. Beforehand, the client will also get the expiration date and calculate the time remaining, and create a timeout to do the refresh process.
+
 ```typescript
-// TODO: Finish overview
+import { useMutation } from 'urql'
+import { useCallback, useContext } from 'react'
+
+const App: React.FC = () => {
+  const {setAccessToken, refreshAccessToken} = useContext(AccessTokenContext);
+  const [, loginMutation] = useMutation(LoginMutation);
+
+  const registerRefresh = useCallback((expireAt: Date) => {
+    const timeout = (expireAt.getTime() - Date.now()) * 1000;
+    setTimeout(() => refreshAccessToken(), timeout);
+  }, [refreshAccessToken]);
+
+  const login = useCallback(async ({username, password}: Credential) => {
+    const response = await loginMutation({ username, password })
+    if (!response.data) return;
+    switch (response.data.login.__typename) {
+      case 'UserCredentials':
+        const { token, expireAt } = response.data.login;
+        setAccessToken(token, expireAt);
+        registerRefresh(expireAt);
+        // send toast to notify user
+        break;
+      case 'InvalidCredentials':
+        const { password } = response.data.login;
+        // send toast to notify user
+        break;
+      case 'UserNotFound':
+        const { username } = response.data.login;
+        // send toast to notify user
+        break;
+      default:
+        // send toast to notify user
+        break;
+    }
+  }, [setAccessToken]);
+
+  return (
+    <div>
+      <button onClick={() => login()}>Login</button>
+    </div>
+  );
 ```
+
+___
+
+![Main auth](./images/scenario-2-a.jpeg)
+
+_<sub>Process diagram for this authentication</sub>_
+___
+
+#### `Using access token when available`
+
+On the request process will be perform as usual which the GraphQL Client (urql) will grab the access token and set it in the authorization header. If the access token is expired, the client will automatically refresh the access token.
+
+```typescript
+import { createClient, dedupExchange, cacheExchange, fetchExchange } from 'urql';
+import { authExchange } from '@urql/exchange-auth';
+
+const client = createClient({
+  url: '/graphql',
+  exchanges: [
+    dedupExchange,
+    cacheExchange,
+    authExchange({
+      /* config */
+    }),
+    fetchExchange,
+  ],
+});
+```
+
+**If Successful**
+
+The request will be performed as usual
+
+**If Failure**
+
+The client will do a retry automatically, otherwise it will show an error message to the user in a pop up toast. The client will give the option to also clear the access token from the local memory and trigger a refresh.
+
+___
+
+![Using access token](./images/scenario-2-b.jpeg)
+_<sub>Process diagram for making authenticated request</sub>_
+___
+
+#### `Refreshing token`
+
+Given any of the scenario where the access token is expired, the access token is invalid, or the app has recently started, the client will perform a GraphQL mutation to refresh the access token. This action is done without the user knowledge.
+
+**If Successful**
+
+The user state will be set to `Logged in` and will be allowed to access other part of the application. The client will also save the new access token in the local memory.
+
+**If Failure**
+
+The user state will be set to `Logged out` and will be redirected to the login page.
+
+___
+
+![Refreshing token](./images/scenario-2-c.jpeg)
+
+_<sub>Process diagram for refreshing access token</sub>_
+___
+
+### Scenario 3: Clock in / Clock out
+
+#### `Clock in`
+
+Clock in will begin with user perfoming the act in the UI. The client will then perform a GraphQL mutation to the server. The server will create a new attendance record and return the new attendance record.
+
+**If Successful**
+
+The server will give the new record information and set the client state to `Clocked in` so the user can clock out.
+
+**If Failure**
+
+The client will notify the user and ask for retry.
+
+___
+
+![Clock in](./images/scenario-3-a.jpeg)
+
+_<sub>Process diagram for clocking in</sub>_
+___
+
+#### `Clock out`
+
+The client side perpective is identical. It's yet to be decided if the client need to will fetch the state first or the serve handle this automatically
+
+___
+
+![Clock out](./images/scenario-3-b.jpeg)
+
+___
+
+### Scenario 4: App start sequence
+
+In the app start, the main App component will try to check if user is logged. Obviously there will likely no access token in the local memory. If the access token doesn't exist, the server will automatically try to refresh the access token. 
+
+**If Successful**
+
+If the client receives the access token, the user state will be set to `Logged in` and the client will be allowed to access other part of the application. The client will also fetch the state of the user from the server.
+
+**If Failure**
+
+The client will set the user state to `Logged out` and will redirect to the login page.
+
+___
+
+![App start](./images/scenario-4.jpeg)
+
+___
