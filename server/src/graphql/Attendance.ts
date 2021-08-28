@@ -111,7 +111,7 @@ export const AttendanceMutation = extendType({
               leaveAt: leaveAt?.toISOString(),
             };
           default:
-            return { username: session.name };
+            return { username: session?.name ?? "Undentified" };
         }
       },
     });
@@ -131,7 +131,8 @@ export const AttendanceMutation = extendType({
           const record = await db.attendance.findFirst({
             where: { id },
           });
-          if (record?.userId !== uid) return { username: session.name };
+          if (record?.userId !== uid)
+            return { username: session?.name ?? "Undentified" };
 
           if (!record || record.leaveAt !== null)
             return { message: "Not yet clocked in" };

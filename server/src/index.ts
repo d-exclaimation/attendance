@@ -48,4 +48,6 @@ async function main() {
   await prisma.$disconnect();
 }
 
-main().catch(console.error);
+main()
+  .catch(console.error)
+  .finally(() => console.log("Shuts down!!"));
