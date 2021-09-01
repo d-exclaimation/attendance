@@ -9,7 +9,8 @@
     "compile": "rm -rf dist/ && tsc",
     "recompile": "tsc --watch",
     "generate": "npx prisma generate",
-    "watch": "nodemon dist/index.js"
+    "watch": "nodemon dist/index.js",
+    "studio": "npx prisma studio"
   },
   "keywords": [],
   "author": "d-exclaimation",
