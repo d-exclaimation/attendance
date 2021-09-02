@@ -6,28 +6,56 @@
 //
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Login: React.FC = () => {
   const { val: name, bind: bindName } = useFormBind();
-  const { val: pass, bind: bindPass, toggler, type, is } = usePassBind();
+  const { val: pass, bind: bindPass, toggler, is } = usePassBind();
   return (
     <div className="flex flex-col items-center w-4/12 justify-center">
-      <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500">
+      <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
         Login
       </div>
-      <form className="w-full">
-        <MagicInput type="name" value={name} bind={bindName} />
-        <MagicInput type={type} label="Password" value={pass} bind={bindPass}>
-          <div
-            className="toggle-password z-20 text-lg"
+      <form
+        className="w-full"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <MagicInput type="text" label="Name" value={name} bind={bindName} />
+        <MagicInput
+          type={is ? "password" : "text"}
+          label="Password"
+          value={pass}
+          bind={bindPass}
+        >
+          <span
+            className="toggle-password z-20 text-sm px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
             onMouseEnter={() => toggler(false)}
             onMouseLeave={() => toggler(true)}
           >
-            {is ? "🔐" : "👁️"}
-          </div>
+            {is ? "show" : "hide"}
+          </span>
         </MagicInput>
+        <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
+          <div className="text-xs">
+            Don't have an account?{" "}
+            <Link
+              className="text-indigo-600 hover:text-indigo-400"
+              to="/signup"
+            >
+              Sign up
+            </Link>
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-1 text-sm text-indigo-600 rounded hover:bg-indigo-50 hover:bg-opacity-80"
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -10,16 +10,14 @@ import { useToggle } from "./useToggle";
 type FormListener = (state: string) => void | Promise<void>;
 
 type FormBindOptions = {
-  listener?: Array<FormListener>;
+  effects?: Array<FormListener>;
   defaultValue?: string;
-  reducer?: (state: string) => string;
 };
 
 export function useFormBind(opt?: FormBindOptions) {
-  const { listener, defaultValue, reducer } = opt ?? {
-    listener: undefined,
+  const { effects: listener, defaultValue } = opt ?? {
+    effects: undefined,
     defaultValue: undefined,
-    reducer: undefined,
   };
   const [state, setState] = useState(defaultValue ?? "");
 
@@ -31,11 +29,10 @@ export function useFormBind(opt?: FormBindOptions) {
 
   const bind = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      // const newState = !!reducer ? reducer(e.target.value) : e.target.value;
       const newState = e.target.value;
       setState(newState);
     },
-    [setState, reducer]
+    [setState]
   );
 
   return {
@@ -52,6 +49,5 @@ export function usePassBind(opt?: FormBindOptions) {
     toggler,
     ...formBind,
     is,
-    type: is ? "password" : "revealed",
   };
 }

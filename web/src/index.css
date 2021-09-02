@@ -38,7 +38,7 @@ code {
   display: block;
   height: 4px;
   width: 100%;
-  background: rgba(79, 70, 229);
+  background: rgba(129, 120, 255);
   transform: scaleX(0);
   transform-origin: 0%;
   transition: transform 500ms ease;
@@ -63,6 +63,8 @@ code {
 .field:focus-within .label,
 .valid:not(:placeholder-shown) + .label {
   transform: scale(0.7) translateY(-2rem);
+  color: rgba(79, 70, 229);
+  opacity: 1;
 }
 
 .toggle-password {

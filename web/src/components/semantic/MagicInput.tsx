@@ -31,7 +31,7 @@ const MagicInput: React.FC<Props> = ({
     [label, type]
   );
   return (
-    <div className="field flex flex-col w-full relative border-dashed border-b-2 border-indigo-500 mt-8 mb-4 mx-auto">
+    <div className="field flex flex-col w-full relative border-b-2 border-black border-opacity-20 mt-8 mb-4 mx-auto">
       <input
         type={type}
         className="m-0 w-full text-sm py-1 px-0 outline-none border-none focus:border-transparent overflow-hidden valid z-10"
@@ -39,7 +39,10 @@ const MagicInput: React.FC<Props> = ({
         placeholder=" "
         onChange={bind}
       />
-      <label htmlFor={type} className="text-indigo-700 text-sm absolute label">
+      <label
+        htmlFor={type}
+        className="text-black text-opacity-50 text-sm absolute label"
+      >
         {labelName}
       </label>
       {children}
