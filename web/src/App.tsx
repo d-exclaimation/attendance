@@ -1,27 +1,22 @@
-//
-//  App.tsx
-//  web
-//
-//  Created by d-exclaimation on 21:28.
-//
-
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.css";
-import Login from "./components/Login";
+import Login from "./components/auth/Login";
+import MainScreen from "./components/main/MainScreen";
 
 const App: React.FC = () => {
   return (
-    <main>
-      <Router>
+    <Router>
+      <div className="flex flex-row w-screen h-screen items-center justify-center bg-white">
         <Switch>
           <Route exact path="/login">
             <Login />
           </Route>
-          <Route path="*">404</Route>
+          <Route path="*">
+            <MainScreen />
+          </Route>
         </Switch>
-      </Router>
-    </main>
+      </div>
+    </Router>
   );
 };
 
