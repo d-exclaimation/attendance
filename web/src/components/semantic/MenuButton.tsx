@@ -22,8 +22,8 @@ const MenuButton: React.FC<Props> = ({ label, onClick }) => {
             hover:bg-opacity-80
             text-indigo-400 
             hover:bg-indigo-50
-            p-1
-            px-10
+            p-2
+            px-8
             m-2
             md:text-xl
             text-md 

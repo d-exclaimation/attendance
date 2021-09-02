@@ -5,11 +5,13 @@ module.exports = {
     extend: {
       zIndex: {
         '-1': '-1',
-       }
+      }
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['active'],
+    },
   },
   plugins: [],
 }

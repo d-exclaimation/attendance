@@ -16,8 +16,10 @@ const MainScreen: React.FC = () => {
   }, [toggler]);
   return (
     <div className="flex flex-col items-center text-indigo-500">
-      <div className="text-2xl md:text-4xl font-mono m-2 mb-4 animate-pulse">
-        Attendance
+      <div className="flash-card">
+        <div className="text-2xl md:text-4xl font-mono m-2 mb-4 animate-pulse">
+          Attendance
+        </div>
       </div>
       <LoadingScreen isLoading={is} isLoggedIn />
     </div>

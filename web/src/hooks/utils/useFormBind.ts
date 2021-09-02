@@ -4,8 +4,24 @@
 //
 //  Created by d-exclaimation on 10:46.
 //
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useToggle } from "./useToggle";
+
+type FormActions =
+  | { type: "bind"; payload: React.ChangeEvent<HTMLInputElement> }
+  | { type: "reset"; def?: string }
+  | { type: "clear" };
+
+function formReducer(state: string, actions: FormActions): string {
+  switch (actions.type) {
+    case "bind":
+      return actions.payload.target.value;
+    case "clear":
+      return "";
+    case "reset":
+      return actions.def ?? "";
+  }
+}
 
 type FormListener = (state: string) => void | Promise<void>;
 
@@ -19,7 +35,7 @@ export function useFormBind(opt?: FormBindOptions) {
     effects: undefined,
     defaultValue: undefined,
   };
-  const [state, setState] = useState(defaultValue ?? "");
+  const [state, dispatch] = useReducer(formReducer, defaultValue ?? "");
 
   const sink = useRef(listener);
 
@@ -29,15 +45,22 @@ export function useFormBind(opt?: FormBindOptions) {
 
   const bind = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newState = e.target.value;
-      setState(newState);
+      dispatch({ type: "bind", payload: e });
     },
-    [setState]
+    [dispatch]
+  );
+
+  const clear = useCallback(() => dispatch({ type: "clear" }), [dispatch]);
+  const reset = useCallback(
+    () => dispatch({ type: "reset", def: defaultValue }),
+    [dispatch, defaultValue]
   );
 
   return {
     val: state,
     bind,
+    clear,
+    reset,
   };
 }
 

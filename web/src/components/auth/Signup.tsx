@@ -1,8 +1,8 @@
 //
-//  Login.tsx
+//  Signup.tsx
 //  web
 //
-//  Created by d-exclaimation on 10:39.
+//  Created by d-exclaimation on 15:28.
 //
 
 import React, { useCallback } from "react";
@@ -11,7 +11,7 @@ import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
-const Login: React.FC = () => {
+const Signup: React.FC = () => {
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center card">
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
-        Login
+        Sign up
       </div>
       <form className="w-full" onSubmit={onSubmit}>
         <MagicInput type="text" label="Name" value={name} bind={bName} />
@@ -48,12 +48,9 @@ const Login: React.FC = () => {
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
-            Don't have an account?{" "}
-            <Link
-              className="text-indigo-600 hover:text-indigo-400"
-              to="/signup"
-            >
-              Sign up
+            Already have an account?{" "}
+            <Link className="text-indigo-600 hover:text-indigo-400" to="/login">
+              Login
             </Link>
           </div>
           <button
@@ -68,4 +65,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Signup;

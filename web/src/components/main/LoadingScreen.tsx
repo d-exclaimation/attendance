@@ -16,16 +16,13 @@ type Props = {
 
 const LoadingScreen: React.FC<Props> = ({ isLoading, isLoggedIn }) => {
   const redirect = useRedirect();
-  const timestamp = useCallback(() => {
-    const time = new Date().toISOString();
-    setTimeout(() => console.table({ time }));
-    redirect("/login");
-  }, [redirect]);
+  const onClickLogin = useCallback(() => redirect("/login"), [redirect]);
+  const onClickSignup = useCallback(() => redirect("/signup"), [redirect]);
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center m-3">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="flex justify-center items-center mt-3">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
       </div>
     );
 
@@ -35,8 +32,8 @@ const LoadingScreen: React.FC<Props> = ({ isLoading, isLoggedIn }) => {
 
   return (
     <div className="flex justify-center items-center pop-up">
-      <MenuButton label="Login" onClick={timestamp} />
-      <MenuButton label="Sign up" />
+      <MenuButton label="Login" onClick={onClickLogin} />
+      <MenuButton label="Sign up" onClick={onClickSignup} />
     </div>
   );
 };

@@ -16,10 +16,6 @@ code {
     monospace;
 }
 
-.pop-up {
-  animation: pop-up 300ms ease-in-out;
-}
-
 .valid {
   background: none;
 }
@@ -73,6 +69,12 @@ code {
   bottom: 0.5rem;
 }
 
+/* ---------------------- Animation --------------------------------- */
+
+.pop-up {
+  animation: pop-up 300ms ease-in-out;
+}
+
 @keyframes pop-up {
   from {
     opacity: 20%;
@@ -80,6 +82,74 @@ code {
   }
   to {
     opacity: 100%;
-    transform: translateX(0%);
+    transform: translateY(0%);
   }
+}
+
+.card {
+  animation: slide-up 1000ms ease-in-out;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0%;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 100%;
+    transform: translateY(0%);
+  }
+}
+
+.flash {
+  animation: flash-right 400ms ease-in-out;
+}
+
+@keyframes flash-right {
+  from {
+    opacity: 10%;
+    transform: translateX(-80%);
+  }
+  80% {
+    opacity: 100%;
+    transform: translateX(20%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.flash-card {
+  animation: slide-up 500ms ease-in;
+}
+
+.pressable {
+  /*
+  transform shadow-xl active:bg-gray-100 hover:scale-90 transition duration-400 hover:shadow-md
+  */
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.pressable:active {
+  --tw-bg-opacity: 1;
+  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  --tw-scale-x: 0.9;
+  --tw-scale-y: 0.9;
+  --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }

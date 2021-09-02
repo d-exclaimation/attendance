@@ -26,7 +26,7 @@ const MagicInput: React.FC<Props> = ({
       label ??
       type
         .split("")
-        .map((x, i) => (i == 0 ? x.toUpperCase() : x.toLowerCase()))
+        .map((x, i) => (i === 0 ? x.toUpperCase() : x.toLowerCase()))
         .join(""),
     [label, type]
   );
