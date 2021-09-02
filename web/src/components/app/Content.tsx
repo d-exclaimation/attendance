@@ -37,7 +37,7 @@ const Content: React.FC = () => {
         {details}
       </div>
       <button
-        className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl pressable"
+        className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
         onClick={() => toggler()}
       >
         {is ? "⏳" : "⌛️"}

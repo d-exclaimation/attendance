@@ -31,7 +31,7 @@ const LoadingScreen: React.FC<Props> = ({ isLoading, isLoggedIn }) => {
   }
 
   return (
-    <div className="flex justify-center items-center pop-up">
+    <div className="flex justify-center items-center _pop-up">
       <MenuButton label="Login" onClick={onClickLogin} />
       <MenuButton label="Sign up" onClick={onClickSignup} />
     </div>

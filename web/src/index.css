@@ -16,19 +16,19 @@ code {
     monospace;
 }
 
-.valid {
+._input {
   background: none;
 }
 
-.valid:valid {
+._input:valid {
   color: black;
 }
 
-.valid:invalid {
+._input:invalid {
   color: rgba(179, 20, 29);
 }
 
-.field::after {
+._text-field::after {
   content: "";
   position: relative;
   display: block;
@@ -41,23 +41,22 @@ code {
   top: 2px;
 }
 
-.field:focus-within {
+._text-field:focus-within {
   border-color: transparent;
 }
 
-.field:focus-within::after {
+._text-field:focus-within::after {
   transform: scaleX(1);
 }
 
-.label {
-  /* z-index: -1; */
+._form-label {
   position: absolute;
   transform-origin: 0%;
   transition: transform 400ms;
 }
 
-.field:focus-within .label,
-.valid:not(:placeholder-shown) + .label {
+._text-field:focus-within ._form-label,
+._input:not(:placeholder-shown) + ._form-label {
   transform: scale(0.7) translateY(-2rem);
   color: rgba(79, 70, 229);
   opacity: 1;
@@ -71,11 +70,11 @@ code {
 
 /* ---------------------- Animation --------------------------------- */
 
-.pop-up {
-  animation: pop-up 300ms ease-in-out;
+._pop-up {
+  animation: _pop-up 300ms ease-in-out;
 }
 
-@keyframes pop-up {
+@keyframes _pop-up {
   from {
     opacity: 20%;
     transform: translateY(-30%);
@@ -86,7 +85,7 @@ code {
   }
 }
 
-.card {
+._card {
   animation: slide-up 1000ms ease-in-out;
 }
 
@@ -101,7 +100,7 @@ code {
   }
 }
 
-.flash {
+._flash {
   animation: flash-right 400ms ease-in-out;
 }
 
@@ -119,11 +118,11 @@ code {
   }
 }
 
-.flash-card {
+._flash-card {
   animation: slide-up 500ms ease-in;
 }
 
-.pressable {
+._pressable {
   /*
   transform shadow-xl active:bg-gray-100 hover:scale-90 transition duration-400 hover:shadow-md
   */
@@ -143,7 +142,7 @@ code {
   transition-duration: 150ms;
 }
 
-.pressable:active {
+._pressable:active {
   --tw-bg-opacity: 1;
   background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
   --tw-scale-x: 0.9;

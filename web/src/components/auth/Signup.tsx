@@ -26,7 +26,7 @@ const Signup: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center card">
+    <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center _card">
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
         Sign up
       </div>
