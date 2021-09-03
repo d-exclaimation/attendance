@@ -1,0 +1,18 @@
+mutation Register($credential: Credentials!) {
+  signup(credential: $credential) {
+    __typename
+    ... on UserCredentials {
+      user {
+        id
+        name
+      }
+      token
+    }
+    ... on UserAlreadyExist {
+      username
+    }
+    ... on InvalidCredentials {
+      password
+    }
+  }
+}

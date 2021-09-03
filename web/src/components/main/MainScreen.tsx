@@ -5,23 +5,21 @@
 //  Created by d-exclaimation on 08:17.
 //
 
-import React, { useEffect } from "react";
-import { useToggle } from "../../hooks/utils/useToggle";
+import React from "react";
+import { useCheckLoginQuery } from "../../graphql/core";
 import LoadingScreen from "./LoadingScreen";
 
 const MainScreen: React.FC = () => {
-  const { is, toggler } = useToggle(true);
-  useEffect(() => {
-    setTimeout(() => toggler(false), 1000);
-  }, [toggler]);
+  const [{ fetching, data }] = useCheckLoginQuery({});
+
   return (
     <div className="flex flex-col items-center text-indigo-500">
       <div className="_flash-card">
         <div className="text-2xl md:text-4xl font-mono m-2 mb-4 animate-pulse">
-          Attendance
+          Attendance {JSON.stringify(typeof data?.me === typeof 10)}
         </div>
       </div>
-      <LoadingScreen isLoading={is} isLoggedIn />
+      <LoadingScreen isLoading={fetching} isLoggedIn />
     </div>
   );
 };

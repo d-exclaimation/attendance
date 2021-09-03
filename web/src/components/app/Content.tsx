@@ -6,6 +6,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useToggle } from "../../hooks/utils/useToggle";
 
 const Content: React.FC = () => {
@@ -14,6 +15,7 @@ const Content: React.FC = () => {
   const [start, setStart] = useState<Date | null>(null);
 
   useEffect(() => {
+    // TODO: -- Change to clock in and out logic
     if (is) setStart(new Date());
     else if (start)
       setWork(((new Date().getTime() - start.getTime()) / 36e5).toFixed(2));
@@ -28,21 +30,29 @@ const Content: React.FC = () => {
     : "You are not at work. Clock in?";
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen">
-      <div
-        className={`font-mono text-xl md:text-3xl mb-3 mx-2 text-indigo-500 ${
-          is && "animate-pulse"
-        } text-center`}
-      >
-        {details}
+    <>
+      <div className="flex flex-col items-center justify-center w-screen">
+        <div
+          className={`font-mono text-xl md:text-3xl mb-3 mx-2 text-indigo-500 ${
+            is && "animate-pulse"
+          } text-center`}
+        >
+          {details}
+        </div>
+        <button
+          className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
+          onClick={() => toggler()}
+        >
+          {is ? "⏳" : "⌛️"}
+        </button>
       </div>
-      <button
-        className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
-        onClick={() => toggler()}
+      <Link
+        to="/"
+        className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 animate-pulse"
       >
-        {is ? "⏳" : "⌛️"}
-      </button>
-    </div>
+        Logout
+      </Link>
+    </>
   );
 };
 

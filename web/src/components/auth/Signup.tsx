@@ -7,22 +7,55 @@
 
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useRegisterMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Signup: React.FC = () => {
+  const [, mutation] = useRegisterMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
   const onSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      cName();
-      cPass();
-      redirect("/app");
+      const { data, error } = await mutation({
+        credential: {
+          username: name,
+          password: pass,
+        },
+      });
+
+      const clearAndRedirect = () => {
+        cName();
+        cPass();
+        redirect("/app");
+      };
+
+      if (error || !data?.signup) {
+        // TODO: -- Add pop up
+        return console.log(error);
+      }
+
+      const res = data.signup;
+
+      switch (res.__typename) {
+        case "UserCredentials":
+          console.table(res);
+          clearAndRedirect();
+          break;
+        case "InvalidCredentials":
+          // TODO: -- Add pop up
+          console.table({ ...res });
+          break;
+        default:
+          // TODO -- Add pop up
+          console.table(res);
+          break;
+      }
     },
-    [cName, cPass, redirect]
+    [cName, cPass, redirect, mutation, name, pass]
   );
 
   return (
@@ -38,13 +71,15 @@ const Signup: React.FC = () => {
           value={pass}
           bind={bPass}
         >
-          <span
+          <button
             className="toggle-password z-20 text-sm px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
-            onMouseEnter={() => toggler(false)}
-            onMouseLeave={() => toggler(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              toggler();
+            }}
           >
             {is ? "show" : "hide"}
-          </span>
+          </button>
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">

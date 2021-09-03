@@ -1,0 +1,19 @@
+mutation Login($credential: Credentials!) {
+  login(credential: $credential) {
+    __typename
+    ... on UserCredentials {
+      user {
+        id
+        name
+      }
+      token
+      expireAt
+    }
+    ... on UserNotFound {
+      username
+    }
+    ... on InvalidCredentials {
+      password
+    }
+  }
+}

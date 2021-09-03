@@ -9,7 +9,7 @@ import NotFound from "./components/shared/404";
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="flex flex-row w-screen h-screen items-center justify-center bg-white">
+      <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
         <Switch>
           <Route exact path="/app">
             <Content />

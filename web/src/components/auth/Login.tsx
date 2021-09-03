@@ -7,22 +7,50 @@
 
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useLoginMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Login: React.FC = () => {
+  const [, mutation] = useLoginMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
+
   const onSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      cName();
-      cPass();
-      redirect("/app");
+
+      const { data, error } = await mutation({
+        credential: { username: name, password: pass },
+      });
+
+      if (!data?.login || error) {
+        return console.log(error);
+      }
+
+      const done = () => {
+        cName();
+        cPass();
+      };
+
+      const res = data.login;
+      switch (res.__typename) {
+        case "UserCredentials":
+          // TODO: -- Edit a store
+          done();
+          redirect("/app");
+          break;
+        case "UserNotFound":
+          console.table(res);
+          break;
+        default:
+          console.table(res);
+          break;
+      }
     },
-    [cName, cPass, redirect]
+    [cName, cPass, redirect, mutation, pass, name]
   );
 
   return (
@@ -38,13 +66,15 @@ const Login: React.FC = () => {
           value={pass}
           bind={bPass}
         >
-          <span
+          <button
             className="toggle-password z-20 text-sm px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
-            onMouseEnter={() => toggler(false)}
-            onMouseLeave={() => toggler(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              toggler();
+            }}
           >
             {is ? "show" : "hide"}
-          </span>
+          </button>
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
