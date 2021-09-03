@@ -23,7 +23,7 @@ async function main() {
   const httpServer = createServer(app);
   const corsOptions = {
     credentials: true,
-    origin: ["https://studio.apollographql.com"],
+    origin: ["https://studio.apollographql.com", "http://localhost:3000", "z-attendance.netlify.app"],
   };
 
   app.use(cookieParser());
@@ -50,4 +50,3 @@ async function main() {
 
 main()
   .catch(console.error)
-  .finally(() => console.log("Shuts down!!"));

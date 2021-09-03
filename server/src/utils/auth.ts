@@ -14,13 +14,13 @@ import { artifacts } from "./../constant/artifacts";
 /** Check if password is either belonging to a user */
 export const isEmployee = (pass: string) => {
   const { password } = artifacts;
-  return password == pass;
+  return password === pass;
 };
 
 /** Check if password is either belonging to an admin */
 export const isAdmin = (pass: string) => {
   const { adminPassword } = artifacts;
-  return pass == adminPassword;
+  return pass === adminPassword;
 };
 
 /** Check if password is either belonging to an admin or a user */
