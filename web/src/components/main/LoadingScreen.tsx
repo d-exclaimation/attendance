@@ -27,7 +27,7 @@ const LoadingScreen: React.FC<Props> = ({ isLoading, isLoggedIn }) => {
     );
 
   if (isLoggedIn) {
-    redirect("/");
+    redirect("/app");
   }
 
   return (

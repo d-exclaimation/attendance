@@ -1,0 +1,15 @@
+mutation Refresh {
+  refresh {
+    __typename
+    ... on UserNotFound {
+      username
+    }
+    ... on AccessCredentials {
+      token
+      expireAt
+    }
+    ... on NoToken {
+      message
+    }
+  }
+}

@@ -50,7 +50,7 @@ type Mutation {
   login(credential: Credentials!): LoginResult!
 
   """Refresh token query"""
-  refresh: RefreshResult
+  refresh: RefreshResult!
 
   """Sign-up mutation with credentials"""
   signup(credential: Credentials!): SignUpResult!

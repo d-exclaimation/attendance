@@ -7,6 +7,7 @@
 
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { AuthStore } from "../../auth/AuthStore";
 import { useLoginMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
@@ -38,7 +39,9 @@ const Login: React.FC = () => {
       const res = data.login;
       switch (res.__typename) {
         case "UserCredentials":
-          // TODO: -- Edit a store
+          const { expireAt, token, user } = res;
+          AuthStore.shared.setAuth({ expireAt, token });
+          console.table(user);
           done();
           redirect("/app");
           break;

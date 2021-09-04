@@ -63,7 +63,7 @@ export type Mutation = {
   /** Sign-up mutation with credentials */
   signup: SignUpResult;
   /** Refresh token query */
-  refresh?: Maybe<RefreshResult>;
+  refresh: RefreshResult;
 };
 
 
@@ -151,6 +151,11 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename: 'Mutation', login: { __typename: 'UserCredentials', token: string, expireAt: string, user: { __typename: 'User', id: string, name: string } } | { __typename: 'UserNotFound', username: string } | { __typename: 'InvalidCredentials', password: string } };
 
+export type RefreshMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RefreshMutation = { __typename: 'Mutation', refresh: { __typename: 'UserNotFound', username: string } | { __typename: 'AccessCredentials', token: string, expireAt: string } | { __typename: 'NoToken', message: string } };
+
 export type RegisterMutationVariables = Exact<{
   credential: Credentials;
 }>;
@@ -188,6 +193,27 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const RefreshDocument = gql`
+    mutation Refresh {
+  refresh {
+    __typename
+    ... on UserNotFound {
+      username
+    }
+    ... on AccessCredentials {
+      token
+      expireAt
+    }
+    ... on NoToken {
+      message
+    }
+  }
+}
+    `;
+
+export function useRefreshMutation() {
+  return Urql.useMutation<RefreshMutation, RefreshMutationVariables>(RefreshDocument);
 };
 export const RegisterDocument = gql`
     mutation Register($credential: Credentials!) {

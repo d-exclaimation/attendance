@@ -105,7 +105,7 @@ export interface NexusGenFieldTypes {
     clockIn: NexusGenRootTypes['ClockIn']; // ClockIn!
     clockOut: NexusGenRootTypes['ClockOut']; // ClockOut!
     login: NexusGenRootTypes['LoginResult']; // LoginResult!
-    refresh: NexusGenRootTypes['RefreshResult'] | null; // RefreshResult
+    refresh: NexusGenRootTypes['RefreshResult']; // RefreshResult!
     signup: NexusGenRootTypes['SignUpResult']; // SignUpResult!
   }
   NoToken: { // field return type

@@ -125,7 +125,7 @@ export const UserMutation = extendType({
       },
     });
 
-    t.field("refresh", {
+    t.nonNull.field("refresh", {
       type: "RefreshResult",
       description: "Refresh token query",
       resolve: async (_s, _a, { session, db, req }) => {
