@@ -1,0 +1,7 @@
+query Status {
+  state {
+    id
+    entryAt
+    leaveAt
+  }
+}

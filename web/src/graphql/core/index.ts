@@ -144,6 +144,18 @@ export type UserNotFound = {
   username: Scalars['String'];
 };
 
+export type ClockInMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClockInMutation = { __typename: 'Mutation', clockIn: { __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> } | { __typename: 'UserNotFound', username: string } };
+
+export type ClockOutMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ClockOutMutation = { __typename: 'Mutation', clockOut: { __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> } | { __typename: 'UserNotFound', username: string } | { __typename: 'NotClockedIn', message: string } };
+
 export type LoginMutationVariables = Exact<{
   credential: Credentials;
 }>;
@@ -168,7 +180,53 @@ export type CheckLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CheckLoginQuery = { __typename: 'Query', me?: Maybe<{ __typename: 'User', id: string, name: string }> };
 
+export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type StatusQuery = { __typename: 'Query', state?: Maybe<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> }> };
+
+
+export const ClockInDocument = gql`
+    mutation ClockIn {
+  clockIn {
+    __typename
+    ... on Attendance {
+      id
+      entryAt
+      leaveAt
+    }
+    ... on UserNotFound {
+      username
+    }
+  }
+}
+    `;
+
+export function useClockInMutation() {
+  return Urql.useMutation<ClockInMutation, ClockInMutationVariables>(ClockInDocument);
+};
+export const ClockOutDocument = gql`
+    mutation ClockOut($id: ID!) {
+  clockOut(id: $id) {
+    __typename
+    ... on Attendance {
+      id
+      entryAt
+      leaveAt
+    }
+    ... on UserNotFound {
+      username
+    }
+    ... on NotClockedIn {
+      message
+    }
+  }
+}
+    `;
+
+export function useClockOutMutation() {
+  return Urql.useMutation<ClockOutMutation, ClockOutMutationVariables>(ClockOutDocument);
+};
 export const LoginDocument = gql`
     mutation Login($credential: Credentials!) {
   login(credential: $credential) {
@@ -250,4 +308,17 @@ export const CheckLoginDocument = gql`
 
 export function useCheckLoginQuery(options: Omit<Urql.UseQueryArgs<CheckLoginQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CheckLoginQuery>({ query: CheckLoginDocument, ...options });
+};
+export const StatusDocument = gql`
+    query Status {
+  state {
+    id
+    entryAt
+    leaveAt
+  }
+}
+    `;
+
+export function useStatusQuery(options: Omit<Urql.UseQueryArgs<StatusQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StatusQuery>({ query: StatusDocument, ...options });
 };

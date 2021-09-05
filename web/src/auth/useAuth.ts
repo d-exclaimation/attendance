@@ -50,6 +50,7 @@ export function useAuth(): Auth {
         AuthStore.shared.setAuth({ expireAt, token });
         getUser();
         setProgress(false);
+
         cronRef.current = setTimeout(async () => await refresh(), diff);
       } catch (_) {}
     },

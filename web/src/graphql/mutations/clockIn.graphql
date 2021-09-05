@@ -1,0 +1,13 @@
+mutation ClockIn {
+  clockIn {
+    __typename
+    ... on Attendance {
+      id
+      entryAt
+      leaveAt
+    }
+    ... on UserNotFound {
+      username
+    }
+  }
+}

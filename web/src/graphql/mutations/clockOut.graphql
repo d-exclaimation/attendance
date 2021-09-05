@@ -1,0 +1,16 @@
+mutation ClockOut($id: ID!) {
+  clockOut(id: $id) {
+    __typename
+    ... on Attendance {
+      id
+      entryAt
+      leaveAt
+    }
+    ... on UserNotFound {
+      username
+    }
+    ... on NotClockedIn {
+      message
+    }
+  }
+}
