@@ -5,15 +5,16 @@
 //  Created by d-exclaimation on 10:39.
 //
 
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthStore } from "../../auth/AuthStore";
+import { AuthContext } from "../../auth/useAuth";
 import { useLoginMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Login: React.FC = () => {
+  const { updateAuth } = useContext(AuthContext);
   const [, mutation] = useLoginMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
@@ -39,9 +40,8 @@ const Login: React.FC = () => {
       const res = data.login;
       switch (res.__typename) {
         case "UserCredentials":
-          const { expireAt, token, user } = res;
-          AuthStore.shared.setAuth({ expireAt, token });
-          console.table(user);
+          const { expireAt, token } = res;
+          updateAuth(expireAt, token);
           done();
           redirect("/app");
           break;
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
           break;
       }
     },
-    [cName, cPass, redirect, mutation, pass, name]
+    [cName, cPass, redirect, mutation, pass, name, updateAuth]
   );
 
   return (

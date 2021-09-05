@@ -6,7 +6,7 @@
 //
 
 import React, { useContext } from "react";
-import { AuthContext } from "../../hooks/auth/useAuth";
+import { AuthContext } from "../../auth/useAuth";
 import LoadingScreen from "./LoadingScreen";
 
 const MainScreen: React.FC = () => {

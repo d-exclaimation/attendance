@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { AuthContext, useAuth } from "./auth/useAuth";
 import Content from "./components/app/Content";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import MainScreen from "./components/main/MainScreen";
 import NotFound from "./components/shared/404";
-import { AuthContext, useAuth } from "./hooks/auth/useAuth";
 
 const App: React.FC = () => {
   const auth = useAuth();

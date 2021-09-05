@@ -5,13 +5,9 @@
 //  Created by d-exclaimation on 01:23.
 //
 
-import { createContext, useCallback, useEffect, useState } from "react";
-import { AuthStore } from "../../auth/AuthStore";
-import {
-  Maybe,
-  useCheckLoginQuery,
-  useRefreshMutation,
-} from "../../graphql/core";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { Maybe, useCheckLoginQuery, useRefreshMutation } from "../graphql/core";
+import { AuthStore } from "./AuthStore";
 
 type Auth = {
   loading: boolean;
@@ -22,7 +18,7 @@ type Auth = {
         name: string;
       }>
     | undefined;
-  updateAuth: (expireAt: string) => void;
+  updateAuth: (expireAt: string, token: string) => void;
 };
 
 const empty: Auth = {
@@ -40,14 +36,27 @@ export function useAuth(): Auth {
     pause: true,
     requestPolicy: "network-only",
   });
+  const cronRef = useRef<NodeJS.Timeout | number | null>(null);
 
-  const updateAuth = useCallback((expireAt: string) => {
-    try {
-      const expiration = new Date(expireAt);
-      const diff = expiration.getTime() - new Date().getTime();
-      setTimeout(async () => await refresh(), diff);
-    } catch (_) {}
-  }, []);
+  const updateAuth = useCallback(
+    (expireAt: string, token: string) => {
+      try {
+        if (cronRef) clearTimeout(cronRef.current as NodeJS.Timeout);
+
+        const expiration = new Date(expireAt);
+        const diff = expiration.getTime() - new Date().getTime();
+
+        // Store value in the store
+        AuthStore.shared.setAuth({ expireAt, token });
+        getUser();
+        setProgress(false);
+        cronRef.current = setTimeout(async () => await refresh(), diff);
+      } catch (_) {}
+    },
+
+    /* eslint-disable */
+    [setProgress, getUser]
+  );
 
   async function refresh() {
     const res = await mutate();
@@ -58,14 +67,13 @@ export function useAuth(): Auth {
     switch (val.__typename) {
       case "AccessCredentials":
         const { expireAt, token } = val;
-        AuthStore.shared.setAuth({ expireAt, token });
-        updateAuth(expireAt);
+        updateAuth(expireAt, token);
         break;
       default:
+        setProgress(false);
+        getUser();
         break;
     }
-    setProgress(false);
-    getUser();
   }
 
   useEffect(() => {
