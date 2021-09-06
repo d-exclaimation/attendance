@@ -19,12 +19,14 @@ type Auth = {
       }>
     | undefined;
   updateAuth: (expireAt: string, token: string) => void;
+  isAdmin: boolean;
 };
 
 const empty: Auth = {
   loading: false,
   user: undefined,
   updateAuth: () => {},
+  isAdmin: false,
 };
 
 export const AuthContext = createContext(empty);
@@ -86,5 +88,6 @@ export function useAuth(): Auth {
     loading: inProgress || fetching,
     user: data?.me,
     updateAuth,
+    isAdmin: (data?.me?.name.toLowerCase() ?? "not Admin") === "admin",
   };
 }

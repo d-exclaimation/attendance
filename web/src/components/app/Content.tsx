@@ -13,9 +13,11 @@ import {
   useClockOutMutation,
   useStatusQuery,
 } from "../../graphql/core";
+import { useRedirect } from "../../hooks/router/useRedirect";
 
 const Content: React.FC = () => {
-  const { loading } = useAuth();
+  const { loading, isAdmin } = useAuth();
+  const redirect = useRedirect();
   const [{ fetching, data }, invalidate] = useStatusQuery({
     pause: loading,
   });
@@ -57,6 +59,11 @@ const Content: React.FC = () => {
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
       </div>
     );
+  }
+
+  if (isAdmin) {
+    redirect("/admin");
+    return null;
   }
 
   const isAtWork = data.state ? !data.state.leaveAt : false;

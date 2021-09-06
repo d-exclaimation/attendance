@@ -40,10 +40,10 @@ const Login: React.FC = () => {
       const res = data.login;
       switch (res.__typename) {
         case "UserCredentials":
-          const { expireAt, token } = res;
+          const { expireAt, token, user } = res;
           updateAuth(expireAt, token);
           done();
-          redirect("/app");
+          redirect(user.name.toLowerCase() === "admin" ? "/admin" : "/app");
           break;
         case "UserNotFound":
           console.table(res);

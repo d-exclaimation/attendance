@@ -147,21 +147,21 @@ export type UserNotFound = {
 export type ClockInMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ClockInMutation = { __typename: 'Mutation', clockIn: { __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> } | { __typename: 'UserNotFound', username: string } };
+export type ClockInMutation = { __typename: 'Mutation', clockIn: { __typename: 'Attendance', id: string } | { __typename: 'UserNotFound', username: string } };
 
 export type ClockOutMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type ClockOutMutation = { __typename: 'Mutation', clockOut: { __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> } | { __typename: 'UserNotFound', username: string } | { __typename: 'NotClockedIn', message: string } };
+export type ClockOutMutation = { __typename: 'Mutation', clockOut: { __typename: 'Attendance', id: string } | { __typename: 'UserNotFound', username: string } | { __typename: 'NotClockedIn', message: string } };
 
 export type LoginMutationVariables = Exact<{
   credential: Credentials;
 }>;
 
 
-export type LoginMutation = { __typename: 'Mutation', login: { __typename: 'UserCredentials', token: string, expireAt: string, user: { __typename: 'User', id: string, name: string } } | { __typename: 'UserNotFound', username: string } | { __typename: 'InvalidCredentials', password: string } };
+export type LoginMutation = { __typename: 'Mutation', login: { __typename: 'UserCredentials', token: string, expireAt: string, user: { __typename: 'User', name: string } } | { __typename: 'UserNotFound', username: string } | { __typename: 'InvalidCredentials', password: string } };
 
 export type RefreshMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -173,7 +173,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: 'UserCredentials', token: string, user: { __typename: 'User', id: string, name: string } } | { __typename: 'UserAlreadyExist', username: string } | { __typename: 'InvalidCredentials', password: string } };
+export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: 'UserCredentials', expireAt: string, token: string, user: { __typename: 'User', name: string } } | { __typename: 'UserAlreadyExist', username: string } | { __typename: 'InvalidCredentials', password: string } };
 
 export type CheckLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -192,8 +192,6 @@ export const ClockInDocument = gql`
     __typename
     ... on Attendance {
       id
-      entryAt
-      leaveAt
     }
     ... on UserNotFound {
       username
@@ -211,8 +209,6 @@ export const ClockOutDocument = gql`
     __typename
     ... on Attendance {
       id
-      entryAt
-      leaveAt
     }
     ... on UserNotFound {
       username
@@ -233,7 +229,6 @@ export const LoginDocument = gql`
     __typename
     ... on UserCredentials {
       user {
-        id
         name
       }
       token
@@ -279,9 +274,9 @@ export const RegisterDocument = gql`
     __typename
     ... on UserCredentials {
       user {
-        id
         name
       }
+      expireAt
       token
     }
     ... on UserAlreadyExist {

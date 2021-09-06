@@ -7,12 +7,14 @@
 
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
 import { useRegisterMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Signup: React.FC = () => {
+  const { updateAuth } = useAuth();
   const [, mutation] = useRegisterMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
@@ -27,10 +29,9 @@ const Signup: React.FC = () => {
         },
       });
 
-      const clearAndRedirect = () => {
+      const done = () => {
         cName();
         cPass();
-        redirect("/app");
       };
 
       if (error || !data?.signup) {
@@ -43,7 +44,10 @@ const Signup: React.FC = () => {
       switch (res.__typename) {
         case "UserCredentials":
           console.table(res);
-          clearAndRedirect();
+          const { expireAt, token, user } = res;
+          updateAuth(expireAt, token);
+          done();
+          redirect(user.name.toLowerCase() === "admin" ? "/admin" : "/app");
           break;
         case "InvalidCredentials":
           // TODO: -- Add pop up
@@ -55,7 +59,7 @@ const Signup: React.FC = () => {
           break;
       }
     },
-    [cName, cPass, redirect, mutation, name, pass]
+    [cName, cPass, redirect, mutation, name, pass, updateAuth]
   );
 
   return (

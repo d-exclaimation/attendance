@@ -3,8 +3,6 @@ mutation ClockOut($id: ID!) {
     __typename
     ... on Attendance {
       id
-      entryAt
-      leaveAt
     }
     ... on UserNotFound {
       username

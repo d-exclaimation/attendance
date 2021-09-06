@@ -3,7 +3,6 @@ mutation Login($credential: Credentials!) {
     __typename
     ... on UserCredentials {
       user {
-        id
         name
       }
       token

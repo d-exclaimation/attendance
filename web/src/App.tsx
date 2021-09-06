@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { AuthContext, useAuth } from "./auth/useAuth";
+import Panel from "./components/admin/Panel";
 import Content from "./components/app/Content";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -23,6 +24,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/login">
               <Login />
+            </Route>
+            <Route exact path="/admin">
+              <Panel />
             </Route>
             <Route exact path="/">
               <MainScreen />

@@ -3,9 +3,9 @@ mutation Register($credential: Credentials!) {
     __typename
     ... on UserCredentials {
       user {
-        id
         name
       }
+      expireAt
       token
     }
     ... on UserAlreadyExist {

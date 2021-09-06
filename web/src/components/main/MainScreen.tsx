@@ -5,13 +5,10 @@
 //  Created by d-exclaimation on 08:17.
 //
 
-import React, { useContext } from "react";
-import { AuthContext } from "../../auth/useAuth";
+import React from "react";
 import LoadingScreen from "./LoadingScreen";
 
 const MainScreen: React.FC = () => {
-  const { loading, user } = useContext(AuthContext);
-
   return (
     <div className="flex flex-col items-center text-indigo-500">
       <div className="_flash-card">
@@ -19,7 +16,7 @@ const MainScreen: React.FC = () => {
           Attendance
         </div>
       </div>
-      <LoadingScreen isLoading={loading} isLoggedIn={!!user} />
+      <LoadingScreen />
     </div>
   );
 };

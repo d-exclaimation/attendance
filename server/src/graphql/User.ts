@@ -113,11 +113,14 @@ export const UserMutation = extendType({
       args: {
         credential: nonNull("Credentials"),
       },
-      resolve: async (_src, { credential }, { db }) => {
+      resolve: async (_src, { credential }, { db, res }) => {
         const { password, username } = credential;
         if (!isEmployeeOrAdmin(password)) return { password };
         try {
           const user = await db.user.create({ data: { name: username } });
+
+          setRefreshCookie(res, { tid: user.id });
+
           return { user, ...signCredentials(user) };
         } catch (e: unknown) {
           return { username };
