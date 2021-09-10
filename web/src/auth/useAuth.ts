@@ -80,6 +80,7 @@ export function useAuth(): Auth {
   }
 
   useEffect(() => {
+    // TODO: Refreshing appear to be done twice, add a ref handling refreshing once
     refresh().catch(console.error);
     /* eslint-disable */
   }, []);
