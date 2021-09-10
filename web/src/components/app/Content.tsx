@@ -71,21 +71,30 @@ const Content: React.FC = () => {
   const entryAt = data.state ? new Date(data.state.entryAt) : null;
   const leaveAt = data.state?.leaveAt ? new Date(data.state.leaveAt) : null;
 
-  const details = isAtWork
-    ? `You are at work since ${entryAt?.toLocaleString() ?? ""}. Clock out?`
+  const details = isAtWork ? "Clock out?" : "Clock in?";
+
+  const footer = isAtWork
+    ? `Last clocked-in at ${entryAt?.toLocaleString() ?? ""}`
     : leaveAt
-    ? `You are no longer at work since ${leaveAt.toLocaleString()}.`
-    : `You haven't work before.`;
+    ? `Last clocked-out at ${leaveAt.toLocaleString()}`
+    : `Never clocked in before`;
 
   return (
     <>
       <div className="flex flex-col items-center justify-center w-screen">
         <div
-          className={`font-mono text-xl md:text-3xl mb-3 mx-2 text-indigo-500 ${
+          className={`font-mono text-xl md:text-3xl mb-2 mx-2 text-indigo-500 ${
             isAtWork && "animate-pulse"
           } text-center`}
         >
           {details}
+        </div>
+        <div
+          className={`font-mono text-xs md:text-xl mb-1 mx-2 text-indigo-400 ${
+            isAtWork && "animate-pulse"
+          } text-center`}
+        >
+          {footer}
         </div>
         <button
           className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
@@ -96,7 +105,7 @@ const Content: React.FC = () => {
       </div>
       <Link
         to="/login"
-        className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 animate-pulse"
+        className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 hover:text-indigo-300"
       >
         Logout
       </Link>

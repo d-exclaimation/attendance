@@ -5,16 +5,16 @@
 //  Created by d-exclaimation on 10:39.
 //
 
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../auth/useAuth";
+import { useAuth } from "../../auth/useAuth";
 import { useLoginMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Login: React.FC = () => {
-  const { updateAuth } = useContext(AuthContext);
+  const { updateAuth } = useAuth();
   const [, mutation] = useLoginMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();

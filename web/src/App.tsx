@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { AuthContext, useAuth } from "./auth/useAuth";
+import { AuthContext, useAuthProvider } from "./auth/useAuth";
 import Panel from "./components/admin/Panel";
 import Content from "./components/app/Content";
 import Login from "./components/auth/Login";
@@ -9,12 +9,12 @@ import MainScreen from "./components/main/MainScreen";
 import NotFound from "./components/shared/404";
 
 const App: React.FC = () => {
-  const auth = useAuth();
+  const auth = useAuthProvider();
 
   return (
-    <AuthContext.Provider value={auth}>
-      <Router>
-        <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
+    <Router>
+      <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
+        <AuthContext.Provider value={auth}>
           <Switch>
             <Route exact path="/app">
               <Content />
@@ -35,9 +35,9 @@ const App: React.FC = () => {
               <NotFound />
             </Route>
           </Switch>
-        </div>
-      </Router>
-    </AuthContext.Provider>
+        </AuthContext.Provider>
+      </div>
+    </Router>
   );
 };
 

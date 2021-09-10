@@ -19,10 +19,8 @@ export class AuthStore {
     try {
       const expiration = new Date(auth.expireAt);
 
-      const diff = expiration.getTime() - new Date().getTime();
-      setTimeout(() => {
-        if (this) this.reset();
-      }, diff);
+      const diff = expiration.getTime() - new Date().getTime() + 3000;
+      setTimeout(() => this && this.reset(), diff);
       this._token = auth.token;
       this._expireAt = expiration;
     } catch (_) {}

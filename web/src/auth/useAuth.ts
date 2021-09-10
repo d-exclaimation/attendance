@@ -1,23 +1,21 @@
-//
-//  useAuth.ts
-//  web
-//
-//  Created by d-exclaimation on 01:23.
-//
-
-import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Maybe, useCheckLoginQuery, useRefreshMutation } from "../graphql/core";
 import { AuthStore } from "./AuthStore";
 
+type UserAccount =
+  | Maybe<{ __typename: "User"; id: string; name: string }>
+  | undefined;
+
 type Auth = {
   loading: boolean;
-  user:
-    | Maybe<{
-        __typename: "User";
-        id: string;
-        name: string;
-      }>
-    | undefined;
+  user: UserAccount;
   updateAuth: (expireAt: string, token: string) => void;
   isAdmin: boolean;
 };
@@ -31,14 +29,16 @@ const empty: Auth = {
 
 export const AuthContext = createContext(empty);
 
-export function useAuth(): Auth {
+export function useAuthProvider(): Auth {
   const [inProgress, setProgress] = useState(true);
   const [, mutate] = useRefreshMutation();
   const [{ fetching, data }, getUser] = useCheckLoginQuery({
     pause: true,
     requestPolicy: "network-only",
   });
+
   const cronRef = useRef<NodeJS.Timeout | number | null>(null);
+  const triggerRef = useRef<boolean>(false);
 
   const updateAuth = useCallback(
     (expireAt: string, token: string) => {
@@ -53,7 +53,10 @@ export function useAuth(): Auth {
         getUser();
         setProgress(false);
 
-        cronRef.current = setTimeout(async () => await refresh(), diff);
+        cronRef.current = setTimeout(async () => {
+          triggerRef.current = false;
+          await refresh();
+        }, diff);
       } catch (_) {}
     },
 
@@ -62,6 +65,9 @@ export function useAuth(): Auth {
   );
 
   async function refresh() {
+    if (triggerRef.current) return;
+    triggerRef.current = true;
+
     const res = await mutate();
     if (!res.data || res.error) return;
 
@@ -80,8 +86,7 @@ export function useAuth(): Auth {
   }
 
   useEffect(() => {
-    // TODO: Refreshing appear to be done twice, add a ref handling refreshing once
-    refresh().catch(console.error);
+    refresh();
     /* eslint-disable */
   }, []);
 
@@ -91,4 +96,8 @@ export function useAuth(): Auth {
     updateAuth,
     isAdmin: (data?.me?.name.toLowerCase() ?? "not Admin") === "admin",
   };
+}
+
+export function useAuth(): Auth {
+  return useContext(AuthContext);
 }
