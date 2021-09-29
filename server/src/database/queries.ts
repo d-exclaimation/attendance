@@ -51,3 +51,20 @@ export async function allAttendance(
     return [];
   }
 }
+
+/** Get the most recent attendance to know the state */
+export async function attendanceState(
+  db: PrismaClient,
+  uid: string
+): Promise<Attendance | null> {
+  try {
+    const res = await db.attendance.findMany({
+      where: { userId: uid },
+      orderBy: { entryAt: "desc" },
+      take: 1,
+    });
+    return res[0];
+  } catch (_) {
+    return null;
+  }
+}

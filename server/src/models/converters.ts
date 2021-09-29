@@ -7,6 +7,11 @@
 
 import { Attendance } from "@prisma/client";
 
+/**
+ * Convert db type into json parseable one.
+ * @param param0 Attendance being converted.
+ * @returns A GraphQL parseable ISO String.
+ */
 export const convertAttendance = ({
   entryAt,
   leaveAt,
@@ -17,6 +22,7 @@ export const convertAttendance = ({
   leaveAt: leaveAt?.toISOString(),
 });
 
+/** Convert the proper data difference into human readable */
 export const convertDate = (entryAt: Date, leaveAt: Date) => {
   const diff = Math.abs(entryAt.getTime() - leaveAt.getTime());
   const diffSeconds = diff / 1000;
