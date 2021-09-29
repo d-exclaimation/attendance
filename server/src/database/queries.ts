@@ -34,3 +34,20 @@ export async function attendanceHistory(
     return Failure("Unrecognized exception");
   }
 }
+
+/** Get the most recent attendance */
+export async function allAttendance(
+  db: PrismaClient,
+  limit: number
+): Promise<Attendance[]> {
+  try {
+    return await db.attendance.findMany({
+      orderBy: {
+        entryAt: "desc",
+      },
+      take: limit,
+    });
+  } catch (_) {
+    return [];
+  }
+}

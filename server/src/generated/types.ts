@@ -54,6 +54,9 @@ export interface NexusGenObjects {
     message: string; // String!
   }
   Query: {};
+  SignUpSuccess: { // root type
+    userInfo: NexusGenRootTypes['User']; // User!
+  }
   User: { // root type
     id: string; // ID!
     name: string; // String!
@@ -79,7 +82,7 @@ export interface NexusGenUnions {
   ClockOut: NexusGenRootTypes['Attendance'] | NexusGenRootTypes['NotClockedIn'] | NexusGenRootTypes['UserNotFound'];
   LoginResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserCredentials'] | NexusGenRootTypes['UserNotFound'];
   RefreshResult: NexusGenRootTypes['AccessCredentials'] | NexusGenRootTypes['NoToken'] | NexusGenRootTypes['UserNotFound'];
-  SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['UserAlreadyExist'] | NexusGenRootTypes['UserCredentials'];
+  SignUpResult: NexusGenRootTypes['InvalidCredentials'] | NexusGenRootTypes['SignUpSuccess'] | NexusGenRootTypes['UserAlreadyExist'];
 }
 
 export type NexusGenRootTypes = NexusGenObjects & NexusGenUnions
@@ -94,9 +97,11 @@ export interface NexusGenFieldTypes {
   Attendance: { // field return type
     entryAt: string; // String!
     id: string; // ID!
+    isCompleted: boolean; // Boolean!
     leaveAt: string | null; // String
     user: NexusGenRootTypes['User']; // User!
     userId: string; // String!
+    workHours: string; // String!
   }
   InvalidCredentials: { // field return type
     password: string; // String!
@@ -118,7 +123,11 @@ export interface NexusGenFieldTypes {
     employees: NexusGenRootTypes['User'][]; // [User!]!
     history: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     me: NexusGenRootTypes['User'] | null; // User
+    recorded: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     state: NexusGenRootTypes['Attendance'] | null; // Attendance
+  }
+  SignUpSuccess: { // field return type
+    userInfo: NexusGenRootTypes['User']; // User!
   }
   User: { // field return type
     attendances: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
@@ -146,9 +155,11 @@ export interface NexusGenFieldTypeNames {
   Attendance: { // field return type name
     entryAt: 'String'
     id: 'ID'
+    isCompleted: 'Boolean'
     leaveAt: 'String'
     user: 'User'
     userId: 'String'
+    workHours: 'String'
   }
   InvalidCredentials: { // field return type name
     password: 'String'
@@ -170,7 +181,11 @@ export interface NexusGenFieldTypeNames {
     employees: 'User'
     history: 'Attendance'
     me: 'User'
+    recorded: 'Attendance'
     state: 'Attendance'
+  }
+  SignUpSuccess: { // field return type name
+    userInfo: 'User'
   }
   User: { // field return type name
     attendances: 'Attendance'
@@ -206,6 +221,9 @@ export interface NexusGenArgTypes {
     history: { // args
       last: number; // Int!
     }
+    recorded: { // args
+      last: number; // Int!
+    }
   }
 }
 
@@ -214,7 +232,7 @@ export interface NexusGenAbstractTypeMembers {
   ClockOut: "Attendance" | "NotClockedIn" | "UserNotFound"
   LoginResult: "InvalidCredentials" | "UserCredentials" | "UserNotFound"
   RefreshResult: "AccessCredentials" | "NoToken" | "UserNotFound"
-  SignUpResult: "InvalidCredentials" | "UserAlreadyExist" | "UserCredentials"
+  SignUpResult: "InvalidCredentials" | "SignUpSuccess" | "UserAlreadyExist"
 }
 
 export interface NexusGenTypeInterfaces {

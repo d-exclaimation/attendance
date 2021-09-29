@@ -34,12 +34,22 @@ export const UserCredentialsType = objectType({
   },
 });
 
+export const SignUpSucessType = objectType({
+  name: "SignUpSuccess",
+  description: "User confirmation for sign up",
+  definition(t) {
+    t.nonNull.field("userInfo", {
+      type: "User",
+    });
+  },
+});
+
 /** Possible Sign Up result handled in a GraphQL Smart manner */
 export const SignUpResultType = unionType({
   name: "SignUpResult",
   description: "Result of a sign up mutation",
   definition(t) {
-    t.members("UserCredentials", "UserAlreadyExist", "InvalidCredentials");
+    t.members("SignUpSuccess", "UserAlreadyExist", "InvalidCredentials");
   },
   resolveType: (item) => {
     const __typename =
@@ -47,8 +57,8 @@ export const SignUpResultType = unionType({
         ? "UserAlreadyExist"
         : "password" in item
         ? "InvalidCredentials"
-        : "token" in item
-        ? "UserCredentials"
+        : "userInfo" in item
+        ? "SignUpSuccess"
         : null;
 
     if (!__typename) throw new Error("Cannot resolve union type");

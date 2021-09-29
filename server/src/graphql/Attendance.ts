@@ -6,7 +6,8 @@
 //
 import { extendType, idArg, intArg, nonNull, objectType } from "nexus";
 import { clockIn } from "../database/mutations";
-import { attendanceHistory } from "../database/queries";
+import { allAttendance, attendanceHistory } from "../database/queries";
+import { convertAttendance, convertDate } from "./../models/converters";
 import { isAdmin } from "./../utils/auth";
 import { isAuth } from "./../utils/isAuth";
 
@@ -23,6 +24,17 @@ export const AttendanceType = objectType({
       type: "User",
       resolve: ({ userId }, _args, { userLoader }) => userLoader.load(userId),
     });
+    t.nonNull.string("workHours", {
+      resolve: (data, _a, _c) => {
+        const entryAt = new Date(data.entryAt);
+        const leaveAt = data?.leaveAt ? new Date(data?.leaveAt) : null;
+        if (!leaveAt) return "Not yet leave work";
+        return convertDate(entryAt, leaveAt);
+      },
+    });
+    t.nonNull.boolean("isCompleted", {
+      resolve: ({ leaveAt }, _a, _c) => !!leaveAt,
+    });
   },
 });
 
@@ -30,6 +42,20 @@ export const AttendanceType = objectType({
 export const AttendanceQuery = extendType({
   type: "Query",
   definition(t) {
+    // All record query (Most recent to limit)
+    t.nonNull.list.nonNull.field("recorded", {
+      type: "Attendance",
+      description: "Get last records for all users",
+      args: { last: nonNull(intArg()) },
+      authorize: isAuth,
+      resolve: async (_s, { last }, { db, session }) => {
+        const uid = session?.id;
+        if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");
+        const res = await allAttendance(db, last);
+        return res.map(convertAttendance);
+      },
+    });
+
     // History Query (Most recent records)
     t.nonNull.list.nonNull.field("history", {
       type: "Attendance",
@@ -46,11 +72,7 @@ export const AttendanceQuery = extendType({
         const res = await attendanceHistory(db, uid, limit);
         switch (res.type) {
           case "ok":
-            return res.data.map(({ entryAt, leaveAt, ...rest }) => ({
-              ...rest,
-              entryAt: entryAt.toISOString(),
-              leaveAt: leaveAt?.toISOString(),
-            }));
+            return res.data.map(convertAttendance);
           default:
             return [];
         }
@@ -73,11 +95,7 @@ export const AttendanceQuery = extendType({
           });
           const data = res[0];
 
-          return {
-            ...data,
-            entryAt: data.entryAt.toISOString(),
-            leaveAt: data.leaveAt?.toISOString(),
-          };
+          return convertAttendance(data);
         } catch (_) {
           return null;
         }
@@ -104,12 +122,7 @@ export const AttendanceMutation = extendType({
 
         switch (res.type) {
           case "ok":
-            const { entryAt, leaveAt, ...rest } = res.data;
-            return {
-              ...rest,
-              entryAt: entryAt.toISOString(),
-              leaveAt: leaveAt?.toISOString(),
-            };
+            return convertAttendance(res.data);
           default:
             return { username: session?.name ?? "Undentified" };
         }
@@ -137,18 +150,14 @@ export const AttendanceMutation = extendType({
           if (!record || record.leaveAt !== null)
             return { message: "Not yet clocked in" };
 
-          const { entryAt, leaveAt, ...rest } = await db.attendance.update({
+          const data = await db.attendance.update({
             where: { id: record.id },
             data: {
               leaveAt: new Date(),
             },
           });
 
-          return {
-            ...rest,
-            entryAt: entryAt.toISOString(),
-            leaveAt: leaveAt?.toISOString(),
-          };
+          return convertAttendance(data);
         } catch (e) {
           return { message: "Not yet clocked in" };
         }

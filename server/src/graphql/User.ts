@@ -9,7 +9,6 @@ import { isAuthAdmin } from "../utils/isAuth";
 import {
   isAdmin,
   isEmployee,
-  isEmployeeOrAdmin,
   refreshCredentials,
   setRefreshCookie,
   signCredentials,
@@ -115,13 +114,10 @@ export const UserMutation = extendType({
       },
       resolve: async (_src, { credential }, { db, res }) => {
         const { password, username } = credential;
-        if (!isEmployeeOrAdmin(password)) return { password };
+        if (!isAdmin(password)) return { password };
         try {
           const user = await db.user.create({ data: { name: username } });
-
-          setRefreshCookie(res, { tid: user.id });
-
-          return { user, ...signCredentials(user) };
+          return { userInfo: user };
         } catch (e: unknown) {
           return { username };
         }

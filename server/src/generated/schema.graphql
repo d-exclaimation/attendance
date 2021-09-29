@@ -12,9 +12,11 @@ type AccessCredentials {
 type Attendance {
   entryAt: String!
   id: ID!
+  isCompleted: Boolean!
   leaveAt: String
   user: User!
   userId: String!
+  workHours: String!
 }
 
 """Attendance clock in possible outcome"""
@@ -76,6 +78,9 @@ type Query {
   """Check for user data"""
   me: User
 
+  """Get last records for all users"""
+  recorded(last: Int!): [Attendance!]!
+
   """Get the last record whether it exist or not"""
   state: Attendance
 }
@@ -84,7 +89,12 @@ type Query {
 union RefreshResult = AccessCredentials | NoToken | UserNotFound
 
 """Result of a sign up mutation"""
-union SignUpResult = InvalidCredentials | UserAlreadyExist | UserCredentials
+union SignUpResult = InvalidCredentials | SignUpSuccess | UserAlreadyExist
+
+"""User confirmation for sign up"""
+type SignUpSuccess {
+  userInfo: User!
+}
 
 """User object type for each employee signed-in"""
 type User {

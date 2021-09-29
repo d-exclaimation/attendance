@@ -10,7 +10,8 @@ import { useToggle } from "./useToggle";
 type FormActions =
   | { type: "bind"; payload: React.ChangeEvent<HTMLInputElement> }
   | { type: "reset"; def?: string }
-  | { type: "clear" };
+  | { type: "clear" }
+  | { type: "ignore" };
 
 function formReducer(state: string, actions: FormActions): string {
   switch (actions.type) {
@@ -20,6 +21,8 @@ function formReducer(state: string, actions: FormActions): string {
       return "";
     case "reset":
       return actions.def ?? "";
+    case "ignore":
+      return state;
   }
 }
 
