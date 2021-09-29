@@ -23,14 +23,14 @@ export const convertDate = (entryAt: Date, leaveAt: Date) => {
   const diffMinutes = diff / (1000 * 60);
   const diffHour = diff / (1000 * 60 * 60);
   if (Math.floor(diffHour) > 0) {
-    return `${Math.floor(diffHour)} hours, ${Math.floor(
+    return `${Math.floor(diffHour)} jam, ${Math.floor(
       diffMinutes % 60
-    )} minutes, ${Math.floor(diffSeconds % 3600)} seconds`;
+    )} menit, ${Math.floor(diffSeconds % 3600)} detik`;
   } else if (Math.floor(diffMinutes) > 0) {
-    return `${Math.floor(diffMinutes)} minutes, ${Math.floor(
+    return `${Math.floor(diffMinutes)} menit, ${Math.floor(
       diffSeconds % 3600
-    )} seconds`;
+    )} detik`;
   } else {
-    return `${Math.floor(diffSeconds)} seconds`;
+    return `${Math.floor(diffSeconds)} detik`;
   }
 };
