@@ -30,8 +30,8 @@ const LoadingScreen: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center _pop-up">
-      <MenuButton label="Login" onClick={onClickLogin} />
-      <MenuButton label="Sign up" onClick={onClickSignup} />
+      <MenuButton label="Masuk" onClick={onClickLogin} />
+      <MenuButton label="Daftar" onClick={onClickSignup} />
     </div>
   );
 };

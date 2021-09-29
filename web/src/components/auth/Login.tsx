@@ -59,10 +59,10 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center _card">
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
-        Login
+        Masuk account
       </div>
       <form className="w-full" onSubmit={onSubmit}>
-        <MagicInput type="text" label="Name" value={name} bind={bName} />
+        <MagicInput type="text" label="Nama" value={name} bind={bName} />
         <MagicInput
           type={is ? "password" : "text"}
           label="Password"
@@ -76,24 +76,24 @@ const Login: React.FC = () => {
               toggler();
             }}
           >
-            {is ? "show" : "hide"}
+            {is ? "lihat" : "tutup"}
           </button>
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
-            Don't have an account?{" "}
+            Belum punya account?{" "}
             <Link
               className="text-indigo-600 hover:text-indigo-400"
               to="/signup"
             >
-              Sign up
+              Daftar
             </Link>
           </div>
           <button
             type="submit"
             className="px-4 py-1 text-sm text-indigo-600 rounded hover:bg-indigo-50 hover:bg-opacity-80"
           >
-            Submit
+            Kirim
           </button>
         </div>
       </form>

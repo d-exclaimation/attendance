@@ -9,6 +9,7 @@ import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import express from "express";
+import depthLimit from "graphql-depth-limit";
 import { createServer } from "http";
 import { __port__, __prod__ } from "./constant/environment";
 import { Context } from "./context";
@@ -23,7 +24,11 @@ async function main() {
   const httpServer = createServer(app);
   const corsOptions = {
     credentials: true,
-    origin: ["https://studio.apollographql.com", "http://localhost:3000", "z-attendance.netlify.app"],
+    origin: [
+      "https://studio.apollographql.com",
+      "http://localhost:3000",
+      "z-attendance.netlify.app",
+    ],
   };
 
   app.use(cookieParser());
@@ -32,6 +37,7 @@ async function main() {
     schema,
     introspection: !__prod__,
     context: async (ctx): Promise<Context> => applyMiddleware(ctx, prisma),
+    validationRules: [depthLimit(3)],
   });
 
   // This part will apply GraphQL on the request,
@@ -48,5 +54,4 @@ async function main() {
   await prisma.$disconnect();
 }
 
-main()
-  .catch(console.error)
+main().catch(console.error);

@@ -7,14 +7,12 @@
 
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../auth/useAuth";
 import { useRegisterMutation } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import MagicInput from "../semantic/MagicInput";
 
 const Signup: React.FC = () => {
-  const { updateAuth } = useAuth();
   const [, mutation] = useRegisterMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
@@ -42,12 +40,12 @@ const Signup: React.FC = () => {
       const res = data.signup;
 
       switch (res.__typename) {
-        case "UserCredentials":
+        case "SignUpSuccess":
           console.table(res);
-          const { expireAt, token, user } = res;
-          updateAuth(expireAt, token);
+          const { userInfo } = res;
           done();
-          redirect(user.name.toLowerCase() === "admin" ? "/admin" : "/app");
+          console.table({ ...userInfo });
+          redirect("/admin");
           break;
         case "InvalidCredentials":
           // TODO: -- Add pop up
@@ -59,16 +57,16 @@ const Signup: React.FC = () => {
           break;
       }
     },
-    [cName, cPass, redirect, mutation, name, pass, updateAuth]
+    [cName, cPass, redirect, mutation, name, pass]
   );
 
   return (
     <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center _card">
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
-        Sign up
+        Daftar account
       </div>
       <form className="w-full" onSubmit={onSubmit}>
-        <MagicInput type="text" label="Name" value={name} bind={bName} />
+        <MagicInput type="text" label="Nama" value={name} bind={bName} />
         <MagicInput
           type={is ? "password" : "text"}
           label="Password"
@@ -82,12 +80,12 @@ const Signup: React.FC = () => {
               toggler();
             }}
           >
-            {is ? "show" : "hide"}
+            {is ? "lihat" : "tutup"}
           </button>
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
-            Already have an account?{" "}
+            Sudah ada account?{" "}
             <Link className="text-indigo-600 hover:text-indigo-400" to="/login">
               Login
             </Link>
@@ -96,7 +94,7 @@ const Signup: React.FC = () => {
             type="submit"
             className="px-4 py-1 text-sm text-indigo-600 rounded hover:bg-indigo-50 hover:bg-opacity-80"
           >
-            Submit
+            Kirim
           </button>
         </div>
       </form>

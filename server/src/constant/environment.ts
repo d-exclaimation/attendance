@@ -10,5 +10,5 @@ export const __prod__ = __env__ === "production";
 export const __port__ = (() => {
   const defPort = 4000;
   const res = parseInt(process.env["PORT"] ?? `${defPort}`);
-  return isNaN(res) ? 4000 : res;
+  return isNaN(res) ? defPort : res;
 })();

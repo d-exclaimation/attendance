@@ -20,6 +20,7 @@ const Content: React.FC = () => {
   const redirect = useRedirect();
   const [{ fetching, data }, invalidate] = useStatusQuery({
     pause: loading,
+    requestPolicy: "network-only",
   });
   const [, clockOut] = useClockOutMutation();
   const [, clockIn] = useClockInMutation();
@@ -71,13 +72,13 @@ const Content: React.FC = () => {
   const entryAt = data.state ? new Date(data.state.entryAt) : null;
   const leaveAt = data.state?.leaveAt ? new Date(data.state.leaveAt) : null;
 
-  const details = isAtWork ? "Clock out?" : "Clock in?";
+  const details = isAtWork ? "Keluar kerja?" : "Masuk kerja?";
 
   const footer = isAtWork
-    ? `Last clocked-in at ${entryAt?.toLocaleString() ?? ""}`
+    ? `Masuk kerja dari ${entryAt?.toLocaleString() ?? ""}`
     : leaveAt
-    ? `Last clocked-out at ${leaveAt.toLocaleString()}`
-    : `Never clocked in before`;
+    ? `Terakhir keluar kerja pada ${leaveAt.toLocaleString()}`
+    : `Belum pernah kerja`;
 
   return (
     <>

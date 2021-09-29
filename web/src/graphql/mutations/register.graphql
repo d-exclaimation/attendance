@@ -1,12 +1,10 @@
 mutation Register($credential: Credentials!) {
   signup(credential: $credential) {
     __typename
-    ... on UserCredentials {
-      user {
+    ... on SignUpSuccess {
+      userInfo {
         name
       }
-      expireAt
-      token
     }
     ... on UserAlreadyExist {
       username

@@ -14,6 +14,7 @@ import {
 import { convertAttendance } from "../../models/converters";
 import { isAdmin } from "../../utils/auth";
 import { isAuth } from "../../utils/isAuth";
+import { isAuthAdmin } from "./../../utils/isAuth";
 
 /** Attendance query */
 export const AttendanceQuery = extendType({
@@ -24,7 +25,7 @@ export const AttendanceQuery = extendType({
       type: "Attendance",
       description: "Get last records for all users",
       args: { last: nonNull(intArg()) },
-      authorize: isAuth,
+      authorize: isAuthAdmin,
       resolve: async (_s, { last }, { db, session }) => {
         const uid = session?.id;
         if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");

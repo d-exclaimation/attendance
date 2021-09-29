@@ -29,6 +29,8 @@ export type Attendance = {
   entryAt: Scalars['String'];
   leaveAt?: Maybe<Scalars['String']>;
   user: User;
+  workHours: Scalars['String'];
+  isCompleted: Scalars['Boolean'];
 };
 
 /** Attendance clock in possible outcome */
@@ -95,6 +97,8 @@ export type NotClockedIn = {
 
 export type Query = {
   __typename: 'Query';
+  /** Get last records for all users */
+  recorded: Array<Attendance>;
   /** Get last x attendance records */
   history: Array<Attendance>;
   /** Get the last record whether it exist or not */
@@ -106,6 +110,11 @@ export type Query = {
 };
 
 
+export type QueryRecordedArgs = {
+  last: Scalars['Int'];
+};
+
+
 export type QueryHistoryArgs = {
   last: Scalars['Int'];
 };
@@ -114,7 +123,13 @@ export type QueryHistoryArgs = {
 export type RefreshResult = UserNotFound | AccessCredentials | NoToken;
 
 /** Result of a sign up mutation */
-export type SignUpResult = UserCredentials | UserAlreadyExist | InvalidCredentials;
+export type SignUpResult = SignUpSuccess | UserAlreadyExist | InvalidCredentials;
+
+/** User confirmation for sign up */
+export type SignUpSuccess = {
+  __typename: 'SignUpSuccess';
+  userInfo: User;
+};
 
 /** User object type for each employee signed-in */
 export type User = {
@@ -173,7 +188,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: 'UserCredentials', expireAt: string, token: string, user: { __typename: 'User', name: string } } | { __typename: 'UserAlreadyExist', username: string } | { __typename: 'InvalidCredentials', password: string } };
+export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: 'SignUpSuccess', userInfo: { __typename: 'User', name: string } } | { __typename: 'UserAlreadyExist', username: string } | { __typename: 'InvalidCredentials', password: string } };
 
 export type CheckLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -272,12 +287,10 @@ export const RegisterDocument = gql`
     mutation Register($credential: Credentials!) {
   signup(credential: $credential) {
     __typename
-    ... on UserCredentials {
-      user {
+    ... on SignUpSuccess {
+      userInfo {
         name
       }
-      expireAt
-      token
     }
     ... on UserAlreadyExist {
       username
