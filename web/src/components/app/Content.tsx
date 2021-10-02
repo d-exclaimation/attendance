@@ -14,6 +14,9 @@ import {
   useStatusQuery,
 } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
+import { useToast } from "../../hooks/utils/useToast";
+import MagicToast from "../semantic/MagicToast";
+import ContentInsider from "./ContentInsider";
 
 const Content: React.FC = () => {
   const { loading, isAdmin } = useAuth();
@@ -24,6 +27,7 @@ const Content: React.FC = () => {
   });
   const [, clockOut] = useClockOutMutation();
   const [, clockIn] = useClockInMutation();
+  const { toast, ...toastProps } = useToast();
 
   const clock = useCallback(async () => {
     if (fetching || !data) return;
@@ -34,25 +38,45 @@ const Content: React.FC = () => {
       if (!res) return;
       switch (res.clockOut.__typename) {
         case "Attendance":
-          invalidate();
-          break;
+          toast({
+            title: "Keluar Success!",
+            description: `Anda telah keluar kerja, informasi jam kerja anda telah ter update di database.`,
+            status: "success",
+          });
+          return invalidate();
         case "NotClockedIn":
-          break;
+          return toast({
+            title: "Belum masuk kerja!!",
+            description: `Anda telah mencoba keluar kerja, tetapi anda belum masuk jam kerja.`,
+            status: "failure",
+          });
         case "UserNotFound":
-          break;
+          return toast({
+            title: "Account tidak ada!!",
+            description: `Anda telah mencoba keluar kerja, tetapi account anda belum terdaftar.`,
+            status: "failure",
+          });
       }
     } else {
       const { data: res } = await clockIn();
       if (!res) return;
       switch (res.clockIn.__typename) {
         case "Attendance":
-          invalidate();
-          break;
+          toast({
+            title: "Masuk Success!",
+            description: `Anda telah masuk kerja, informasi jam kerja anda telah ter update di database.`,
+            status: "success",
+          });
+          return invalidate();
         case "UserNotFound":
-          break;
+          return toast({
+            title: "Account tidak ada!!",
+            description: `Anda telah mencoba masuk kerja, tetapi account anda belum terdaftar.`,
+            status: "failure",
+          });
       }
     }
-  }, [clockIn, clockOut, fetching, data, invalidate]);
+  }, [clockIn, clockOut, fetching, data, invalidate, toast]);
 
   if (fetching || !data) {
     return (
@@ -67,43 +91,10 @@ const Content: React.FC = () => {
     return null;
   }
 
-  const isAtWork = data.state ? !data.state.leaveAt : false;
-
-  const entryAt = data.state ? new Date(data.state.entryAt) : null;
-  const leaveAt = data.state?.leaveAt ? new Date(data.state.leaveAt) : null;
-
-  const details = isAtWork ? "Keluar kerja?" : "Masuk kerja?";
-
-  const footer = isAtWork
-    ? `Masuk kerja dari ${entryAt?.toLocaleString() ?? ""}`
-    : leaveAt
-    ? `Terakhir keluar kerja pada ${leaveAt.toLocaleString()}`
-    : `Belum pernah kerja`;
-
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-screen">
-        <div
-          className={`font-mono text-xl md:text-3xl mb-2 mx-2 text-indigo-500 ${
-            isAtWork && "animate-pulse"
-          } text-center`}
-        >
-          {details}
-        </div>
-        <div
-          className={`font-mono text-xs md:text-xl mb-1 mx-2 text-indigo-400 ${
-            isAtWork && "animate-pulse"
-          } text-center`}
-        >
-          {footer}
-        </div>
-        <button
-          className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
-          onClick={clock}
-        >
-          {isAtWork ? "⏳" : "⌛️"}
-        </button>
-      </div>
+      <MagicToast {...toastProps} />
+      <ContentInsider data={data} clock={clock} />
       <Link
         to="/login"
         className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 hover:text-indigo-300"

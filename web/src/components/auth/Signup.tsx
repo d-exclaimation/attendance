@@ -8,15 +8,16 @@
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useRegisterMutation } from "../../graphql/core";
-import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
+import { useToast } from "../../hooks/utils/useToast";
 import MagicInput from "../semantic/MagicInput";
+import MagicToast from "../semantic/MagicToast";
 
 const Signup: React.FC = () => {
   const [, mutation] = useRegisterMutation();
-  const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
+  const { toast, ...toastProps } = useToast();
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -33,31 +34,39 @@ const Signup: React.FC = () => {
       };
 
       if (error || !data?.signup) {
-        // TODO: -- Add pop up
-        return console.log(error);
+        return toast({
+          title: "Ada gangguan dari server!",
+          description: error?.message.toString() ?? "Mohon di tunggu",
+          status: "warning",
+        });
       }
 
       const res = data.signup;
 
       switch (res.__typename) {
         case "SignUpSuccess":
-          console.table(res);
           const { userInfo } = res;
-          done();
-          console.table({ ...userInfo });
-          redirect("/admin");
-          break;
+          toast({
+            title: "Account telah terbuat!",
+            description: `Account dengan name "${userInfo.name}"`,
+            status: "success",
+          });
+          return done();
         case "InvalidCredentials":
-          // TODO: -- Add pop up
-          console.table({ ...res });
-          break;
+          return toast({
+            title: "Tidak ada access!!",
+            description: `Password "${res.password}" tidak punya access untuk daftar account.`,
+            status: "failure",
+          });
         default:
-          // TODO -- Add pop up
-          console.table(res);
-          break;
+          return toast({
+            title: "Duplicate account!!",
+            description: `Account dengan nama "${res.username}" sudah ada di database.`,
+            status: "failure",
+          });
       }
     },
-    [cName, cPass, redirect, mutation, name, pass]
+    [cName, cPass, mutation, name, pass, toast]
   );
 
   return (
@@ -98,6 +107,7 @@ const Signup: React.FC = () => {
           </button>
         </div>
       </form>
+      <MagicToast {...toastProps} />
     </div>
   );
 };
