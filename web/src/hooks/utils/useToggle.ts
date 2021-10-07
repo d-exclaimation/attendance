@@ -1,5 +1,5 @@
 //
-//  useToggle.tsx
+//  useToggle.ts
 //  web
 //
 //  Created by d-exclaimation on 07:39.

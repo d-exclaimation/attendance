@@ -14,7 +14,7 @@ import React from "react";
 import { Toast } from "../../interfaces/Toast";
 
 type Props = {
-  flags: Toast[];
+  flags: (Toast & { id: string })[];
   onDismissed: (id: string | number, analyticsEvent: any) => void;
 };
 
@@ -44,12 +44,12 @@ const MagicToast: React.FC<Props> = ({ flags, onDismissed }) => {
 
   return (
     <FlagGroup onDismissed={onDismissed}>
-      {flags.map(({ title, description, status }, flagId) => {
+      {flags.map(({ title, description, status, id }) => {
         return (
           <AutoDismissFlag
-            id={flagId}
+            id={id}
             icon={iconFromStatus(status)}
-            key={flagId}
+            key={id}
             title={title}
             description={description}
           />

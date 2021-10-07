@@ -8,12 +8,15 @@
 import { useState } from "react";
 import { Toast } from "../../interfaces/Toast";
 
+type ToastID = Toast & { id: string };
+
 export function useToast() {
-  const [flags, setFlags] = useState<Toast[]>([]);
+  const [flags, setFlags] = useState<ToastID[]>([]);
 
   const toast = (newFlag: Toast) => {
+    const id = new Date().toISOString() + `${Math.random().toFixed(4)}`;
     const newFlags = flags.slice();
-    newFlags.splice(0, 0, newFlag);
+    newFlags.splice(0, 0, { ...newFlag, id });
 
     setFlags(newFlags);
   };

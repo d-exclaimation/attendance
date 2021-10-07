@@ -5,17 +5,38 @@
 //  Created by d-exclaimation on 14:39.
 //
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
+import { useAdminPanelQuery } from "../../graphql/core";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import RecordTable from "./RecordTable";
 
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
+  const [{ fetching, data, error }] = useAdminPanelQuery({
+    variables: {
+      last: 10,
+    },
+    pause: loading,
+  });
+
   const redirect = useRedirect();
 
-  if (loading) {
+  const panelInfo = useMemo(() => {
+    if (!data) return [];
+    return data.recorded.map(
+      ({ id, entryAt, leaveAt, user: { name }, workHours }) => ({
+        id,
+        entryAt: new Date(entryAt),
+        leaveAt: leaveAt ? new Date(leaveAt) : undefined,
+        name,
+        workHours,
+      })
+    );
+  }, [data]);
+
+  if (loading || fetching) {
     return (
       <div className="flex justify-center items-center mt-3">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
@@ -23,7 +44,7 @@ const Panel: React.FC = () => {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAdmin || error || !data) {
     redirect("/");
     return null;
   }
@@ -39,19 +60,7 @@ const Panel: React.FC = () => {
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
         Admin Panel
       </div>
-      <RecordTable
-        rows={[
-          {
-            name: "Bob",
-            entryAt: new Date(),
-          },
-          {
-            name: "Vincent",
-            entryAt: new Date(),
-            leaveAt: new Date(),
-          },
-        ]}
-      />
+      <RecordTable rows={panelInfo} />
     </div>
   );
 };

@@ -190,6 +190,13 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: 'SignUpSuccess', userInfo: { __typename: 'User', name: string } } | { __typename: 'UserAlreadyExist', username: string } | { __typename: 'InvalidCredentials', password: string } };
 
+export type AdminPanelQueryVariables = Exact<{
+  last: Scalars['Int'];
+}>;
+
+
+export type AdminPanelQuery = { __typename: 'Query', recorded: Array<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string>, workHours: string, user: { __typename: 'User', id: string, name: string } }> };
+
 export type CheckLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -304,6 +311,24 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const AdminPanelDocument = gql`
+    query AdminPanel($last: Int!) {
+  recorded(last: $last) {
+    id
+    entryAt
+    leaveAt
+    user {
+      id
+      name
+    }
+    workHours
+  }
+}
+    `;
+
+export function useAdminPanelQuery(options: Omit<Urql.UseQueryArgs<AdminPanelQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AdminPanelQuery>({ query: AdminPanelDocument, ...options });
 };
 export const CheckLoginDocument = gql`
     query CheckLogin {

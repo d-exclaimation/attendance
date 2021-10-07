@@ -1,0 +1,12 @@
+query AdminPanel($last: Int!) {
+  recorded(last: $last) {
+    id
+    entryAt
+    leaveAt
+    user {
+      id
+      name
+    }
+    workHours
+  }
+}
