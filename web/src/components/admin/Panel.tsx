@@ -9,14 +9,20 @@ import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import { useAdminPanelQuery } from "../../graphql/core";
+import { useQueryParam } from "../../hooks/router/useQueryParam";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import RecordTable from "./RecordTable";
 
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
+  const qLast = useQueryParam("lat");
+  const last = useMemo(() => {
+    const lim = parseInt(qLast ?? "10");
+    return isNaN(lim) ? 10 : lim;
+  }, [qLast]);
   const [{ fetching, data, error }] = useAdminPanelQuery({
     variables: {
-      last: 10,
+      last,
     },
     pause: loading,
   });
