@@ -23,11 +23,14 @@ The idea is that the Server will specify a specific schema and allowed operation
 
 ## Client
 
-The specification of the client has yet to be finalised. However, it will be a single page application to handle authentication and features with convenience
+The client will be built with `React` (SPA). It will be using `Tailwind` and `AtlasKit` to make the components. To connect to the GraphQL API, I will be using `urql` instead of `apollo-client`, because I thought it will be easier to use for something minimal which is what I am using (will be considering migrating to `apollo-client` when I need more features).
 
-| Name  | Usage                           | Reason                                                           |
-| ----- | ------------------------------- | ---------------------------------------------------------------- |
-| React | Single Page Application Library | Allow for builing Single page, interactive UI/UX with Javascript |
+| Name     | Usage                           | Reason                                                           |
+| -------- | ------------------------------- | ---------------------------------------------------------------- |
+| React    | Single Page Application Library | Allow for builing Single page, interactive UI/UX with Javascript |
+| Tailwind | CSS Utilities Library           | Allow for better and cleaner design                              |
+| AtlasKit | Fully developeed components     | Allow for better UI without too much time                        |
+| urql     | Minimal GraphQL Client          | Allow getting information to GraphQL Server                      |
 
 ## Server & Client response cycle
 
@@ -85,9 +88,10 @@ The process will be perform without too much hassle on the client side. If the e
 
 The server will read the refresh token from the cookie header and validate it.
 
-
 ```graphql
-"""Access token and friends without the user"""
+"""
+Access token and friends without the user
+"""
 type AccessCredentials {
   expireAt: String!
   token: String!
@@ -172,23 +176,29 @@ const App: React.FC = () => {
   );
 ```
 
-___
+---
 
 ![Main auth](./images/scenario-2-a.jpeg)
 
 _<sub>Process diagram for this authentication</sub>_
-___
+
+---
 
 #### `Using access token when available`
 
 On the request process will be perform as usual which the GraphQL Client (urql) will grab the access token and set it in the authorization header. If the access token is expired, the client will automatically refresh the access token.
 
 ```typescript
-import { createClient, dedupExchange, cacheExchange, fetchExchange } from 'urql';
-import { authExchange } from '@urql/exchange-auth';
+import {
+  createClient,
+  dedupExchange,
+  cacheExchange,
+  fetchExchange,
+} from "urql";
+import { authExchange } from "@urql/exchange-auth";
 
 const client = createClient({
-  url: '/graphql',
+  url: "/graphql",
   exchanges: [
     dedupExchange,
     cacheExchange,
@@ -208,11 +218,12 @@ The request will be performed as usual
 
 The client will do a retry automatically, otherwise it will show an error message to the user in a pop up toast. The client will give the option to also clear the access token from the local memory and trigger a refresh.
 
-___
+---
 
 ![Using access token](./images/scenario-2-b.jpeg)
 _<sub>Process diagram for making authenticated request</sub>_
-___
+
+---
 
 #### `Refreshing token`
 
@@ -226,12 +237,13 @@ The user state will be set to `Logged in` and will be allowed to access other pa
 
 The user state will be set to `Logged out` and will be redirected to the login page.
 
-___
+---
 
 ![Refreshing token](./images/scenario-2-c.jpeg)
 
 _<sub>Process diagram for refreshing access token</sub>_
-___
+
+---
 
 ### Scenario 3: Clock in / Clock out
 
@@ -247,26 +259,27 @@ The server will give the new record information and set the client state to `Clo
 
 The client will notify the user and ask for retry.
 
-___
+---
 
 ![Clock in](./images/scenario-3-a.jpeg)
 
 _<sub>Process diagram for clocking in</sub>_
-___
+
+---
 
 #### `Clock out`
 
 The client side perpective is identical. It's yet to be decided if the client need to will fetch the state first or the serve handle this automatically
 
-___
+---
 
 ![Clock out](./images/scenario-3-b.jpeg)
 
-___
+---
 
 ### Scenario 4: App start sequence
 
-In the app start, the main App component will try to check if user is logged. Obviously there will likely no access token in the local memory. If the access token doesn't exist, the server will automatically try to refresh the access token. 
+In the app start, the main App component will try to check if user is logged. Obviously there will likely no access token in the local memory. If the access token doesn't exist, the server will automatically try to refresh the access token.
 
 **If Successful**
 
@@ -276,8 +289,8 @@ If the client receives the access token, the user state will be set to `Logged i
 
 The client will set the user state to `Logged out` and will redirect to the login page.
 
-___
+---
 
 ![App start](./images/scenario-4.jpeg)
 
-___
+---
