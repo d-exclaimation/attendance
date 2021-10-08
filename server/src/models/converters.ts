@@ -9,6 +9,17 @@ import { Attendance } from "@prisma/client";
 
 /**
  * Convert db type into json parseable one.
+ *
+ * ---
+ * ```ts
+ * const data = {
+ *   entryAt: new Date(),
+ *   leaveAt: new Date()
+ * };
+ *
+ * convertAttendance(data);
+ * // { entryAt: "<iso-date-string", leaveAt: "<iso-date-string>" }
+ * ```
  * @param param0 Attendance being converted.
  * @returns A GraphQL parseable ISO String.
  */

@@ -29,6 +29,20 @@ export const isEmployeeOrAdmin = (pass: string) =>
 
 /**
  * Getting Authorixation Token
+ *
+ * ---
+ * ```ts
+ * await fetch("...", {
+ *   ...options,
+ *   headers: {
+ *     "Authorization": "Bearer this-is-token"
+ *   }
+ * });
+ *
+ * getAuthorizationKey(request);
+ * // "this-is-token": string | null
+ * ```
+ *
  * @param headers Incoming HTTP Header to get Token.
  * @returns Token value.
  */
@@ -41,6 +55,13 @@ export const getAuthorizationKey = (headers: IncomingHttpHeaders) => {
 
 /**
  * Sign any object
+ *
+ * ---
+ * ```ts
+ * signCredentials({ id: "1" });
+ * // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.aGaozwexchwo0ElAWsxVR-b8JfNRDdAbWqOo-1p0Zhc"
+ * ```
+ *
  * @param obj Object to be sign with JWT.
  * @returns JWT String.
  */
@@ -60,6 +81,14 @@ export const signCredentials = <T extends object>(obj: T) => {
 
 /**
  * Get an object from JWT token.
+ *
+ * ---
+ * ```ts
+ * const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.aGaozwexchwo0ElAWsxVR-b8JfNRDdAbWqOo-1p0Zhc";
+ * unsignToken<{id: string}>(token)
+ *  .then(({id}) => console.log(id));
+ * // "1"
+ * ```
  * @param token Token value.
  * @returns Parsed Token
  */

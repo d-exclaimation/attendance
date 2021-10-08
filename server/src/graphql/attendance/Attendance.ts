@@ -16,11 +16,21 @@ export const AttendanceType = objectType({
     t.nonNull.string("userId");
     t.nonNull.string("entryAt");
     t.string("leaveAt");
+
     t.nonNull.field("user", {
       type: "User",
+      /**
+       * Get the user who owned the record, using the dataloader
+       * @returns A user related to the record
+       */
       resolve: ({ userId }, _args, { userLoader }) => userLoader.load(userId),
     });
+
     t.nonNull.string("workHours", {
+      /**
+       * Convert to `entryAt` and `leaveAt` to a human readable format.
+       * @returns A string describing the work hours.
+       */
       resolve: (data, _a, _c) => {
         const entryAt = new Date(data.entryAt);
         const leaveAt = data?.leaveAt ? new Date(data?.leaveAt) : null;
@@ -28,6 +38,7 @@ export const AttendanceType = objectType({
         return convertDate(entryAt, leaveAt);
       },
     });
+
     t.nonNull.boolean("isCompleted", {
       resolve: ({ leaveAt }, _a, _c) => !!leaveAt,
     });

@@ -20,6 +20,10 @@ export const AttendanceMutation = extendType({
       description:
         "Perform clock in and create a new record (Will not invalidate last un-clocked out record)",
       authorize: isAuth,
+      /**
+       * Clock In and Add a new record with the `entryAt` timestamp
+       * @returns The newly created Attendance.
+       */
       resolve: async (_s, _a, { session, db }) => {
         const uid = session?.id;
         if (!uid || isAdmin(uid))
@@ -43,6 +47,10 @@ export const AttendanceMutation = extendType({
         id: nonNull(idArg()),
       },
       authorize: isAuth,
+      /**
+       * Clock out and set the `leaveAt` on the recor
+       * @returns The modified Attendance record.
+       */
       resolve: async (_s, { id }, { db, session }) => {
         const uid = session?.id;
         if (!uid || isAdmin(uid))

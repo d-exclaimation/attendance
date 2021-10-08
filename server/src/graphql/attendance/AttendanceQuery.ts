@@ -16,16 +16,21 @@ import { isAdmin } from "../../utils/auth";
 import { isAuth } from "../../utils/isAuth";
 import { isAuthAdmin } from "./../../utils/isAuth";
 
-/** Attendance query */
+/**
+ * Attendance query
+ */
 export const AttendanceQuery = extendType({
   type: "Query",
   definition(t) {
-    // All record query (Most recent to limit)
     t.nonNull.list.nonNull.field("recorded", {
       type: "Attendance",
       description: "Get last records for all users",
       args: { last: nonNull(intArg()) },
       authorize: isAuthAdmin,
+      /**
+       * All record query (Most recent to limit)
+       * @returns List of recent Attendance
+       */
       resolve: async (_s, { last }, { db, session }) => {
         const uid = session?.id;
         if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");
@@ -34,12 +39,15 @@ export const AttendanceQuery = extendType({
       },
     });
 
-    // History Query (Most recent records)
     t.nonNull.list.nonNull.field("history", {
       type: "Attendance",
       description: "Get last x attendance records",
       args: { last: nonNull(intArg()) },
       authorize: isAuth,
+      /**
+       * History query (Most recent records)
+       * @returns List of recent Attendance for a specific user
+       */
       resolve: async (_s, { last }, { db, session }) => {
         const uid = session?.id;
         if (!uid || isAdmin(uid)) throw Error("Admin has no attendance");
@@ -61,6 +69,10 @@ export const AttendanceQuery = extendType({
       type: "Attendance",
       description: "Get the last record whether it exist or not",
       authorize: isAuth,
+      /**
+       * Get the current state of the user
+       * @returns The last attendance if any
+       */
       resolve: async (_s, _a, { db, session }) => {
         const uid = session?.id;
         if (!uid || isAdmin(uid)) return null;
