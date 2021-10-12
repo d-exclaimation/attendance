@@ -12,9 +12,10 @@ import InfoIcon from "@atlaskit/icon/glyph/info";
 import WarningIcon from "@atlaskit/icon/glyph/warning";
 import React from "react";
 import { Toast } from "../../interfaces/Toast";
+import { WithID } from "../../interfaces/utilities";
 
 type Props = {
-  flags: (Toast & { id: string })[];
+  flags: WithID<Toast>[];
   onDismissed: (id: string | number, analyticsEvent: any) => void;
 };
 

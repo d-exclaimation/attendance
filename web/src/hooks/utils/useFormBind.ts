@@ -7,12 +7,19 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useToggle } from "./useToggle";
 
+/** Form Reducer Actions */
 type FormActions =
   | { type: "bind"; payload: React.ChangeEvent<HTMLInputElement> }
   | { type: "reset"; def?: string }
   | { type: "clear" }
   | { type: "ignore" };
 
+/**
+ * Form reducer allowing for 4 types state manipulation efficiently.
+ * @param state Current state when reducer was called.
+ * @param actions Actions being dispatched.
+ * @returns A new state of the same type.
+ */
 function formReducer(state: string, actions: FormActions): string {
   switch (actions.type) {
     case "bind":
@@ -26,13 +33,36 @@ function formReducer(state: string, actions: FormActions): string {
   }
 }
 
+/** Side effect listener for the given form state */
 type FormListener = (state: string) => void | Promise<void>;
 
+/** Form hook options for setting default value and listener / sinks */
 type FormBindOptions = {
   effects?: Array<FormListener>;
   defaultValue?: string;
 };
 
+/** Type alias for the React <input> onChange event listener */
+type OnChange = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => void | Promise<void>;
+
+/**
+ * Form binding hook for input form
+ *
+ * ---
+ * ```tsx
+ * const App: React.FC = () => {
+ *   const {val, bind} = useFormBind();
+ *   return (
+ *     <input value={val} onChange={bind} />
+ *   );
+ * };
+ * ```
+ *
+ * @param opt useForm options for listeners / sinks and default value if any
+ * @returns The form state, a binding function, and two utilities actions.
+ */
 export function useFormBind(opt?: FormBindOptions) {
   const { effects: listener, defaultValue } = opt ?? {
     effects: undefined,
@@ -46,10 +76,8 @@ export function useFormBind(opt?: FormBindOptions) {
     sink.current?.forEach((list) => list(state));
   }, [state]);
 
-  const bind = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch({ type: "bind", payload: e });
-    },
+  const bind = useCallback<OnChange>(
+    (e) => dispatch({ type: "bind", payload: e }),
     [dispatch]
   );
 
@@ -67,6 +95,22 @@ export function useFormBind(opt?: FormBindOptions) {
   };
 }
 
+/**
+ * Form password specific binding hook
+ *
+ * ---
+ * ```tsx
+ * const App: React.FC = () => {
+ *   const {val, bind, is} = usePassBind();
+ *   return (
+ *     <input type={is ? "password" : "text"} value={val} onChange={bind} />
+ *   );
+ * };
+ * ```
+ *
+ * @param opt Form Options
+ * @returns The same as FormBind but with a shown toggler
+ */
 export function usePassBind(opt?: FormBindOptions) {
   const { is, toggler } = useToggle(true);
   const formBind = useFormBind(opt);

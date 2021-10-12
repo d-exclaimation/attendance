@@ -8,6 +8,10 @@
 import React from "react";
 import LoadingScreen from "./LoadingScreen";
 
+/**
+ * Paint the main welcome screen to either redirect or give options login or sign up.
+ * @returns Welcome screen
+ */
 const MainScreen: React.FC = () => {
   return (
     <div className="flex flex-col items-center text-indigo-500">

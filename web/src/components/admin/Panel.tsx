@@ -16,29 +16,30 @@ import RecordTable from "./RecordTable";
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
   const qLast = useQueryParam("lat");
+
   const last = useMemo(() => {
     const lim = parseInt(qLast ?? "10");
     return isNaN(lim) ? 10 : lim;
   }, [qLast]);
+
   const [{ fetching, data, error }] = useAdminPanelQuery({
-    variables: {
-      last,
-    },
+    variables: { last },
     pause: loading,
   });
 
   const redirect = useRedirect();
 
   const panelInfo = useMemo(() => {
-    if (!data) return [];
-    return data.recorded.map(
-      ({ id, entryAt, leaveAt, user: { name }, workHours }) => ({
-        id,
-        entryAt: new Date(entryAt),
-        leaveAt: leaveAt ? new Date(leaveAt) : undefined,
-        name,
-        workHours,
-      })
+    return (
+      data?.recorded?.map(
+        ({ id, entryAt, leaveAt, user: { name }, workHours }) => ({
+          id,
+          entryAt: new Date(entryAt),
+          leaveAt: leaveAt ? new Date(leaveAt) : undefined,
+          name,
+          workHours,
+        })
+      ) ?? []
     );
   }, [data]);
 

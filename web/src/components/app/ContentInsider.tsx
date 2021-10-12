@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 18:15.
 //
 
-import React from "react";
+import React, { useMemo } from "react";
 import { StatusQuery } from "../../graphql/core";
 
 type Props = {
@@ -14,18 +14,35 @@ type Props = {
 };
 
 const ContentInsider: React.FC<Props> = ({ data, clock }: Props) => {
-  const isAtWork = data.state ? !data.state.leaveAt : false;
+  const isAtWork = useMemo(
+    () => (data.state ? !data.state.leaveAt : false),
+    [data]
+  );
 
-  const entryAt = data.state ? new Date(data.state.entryAt) : null;
-  const leaveAt = data.state?.leaveAt ? new Date(data.state.leaveAt) : null;
+  const entryAt = useMemo(
+    () => (data.state ? new Date(data.state.entryAt) : null),
+    [data]
+  );
+  const leaveAt = useMemo(
+    () => (data.state?.leaveAt ? new Date(data.state.leaveAt) : null),
+    [data]
+  );
 
-  const details = isAtWork ? "Keluar kerja?" : "Masuk kerja?";
+  const details = useMemo(
+    () => (isAtWork ? "Keluar kerja?" : "Masuk kerja?"),
+    [isAtWork]
+  );
 
-  const footer = isAtWork
-    ? `Masuk kerja dari ${entryAt?.toLocaleString() ?? ""}`
-    : leaveAt
-    ? `Terakhir keluar kerja pada ${leaveAt.toLocaleString()}`
-    : `Belum pernah kerja`;
+  const footer = useMemo(
+    () =>
+      isAtWork
+        ? `Masuk kerja dari ${entryAt?.toLocaleString() ?? ""}`
+        : leaveAt
+        ? `Terakhir keluar kerja pada ${leaveAt.toLocaleString()}`
+        : `Belum pernah kerja`,
+    [isAtWork, entryAt, leaveAt]
+  );
+
   return (
     <div className="flex flex-col items-center justify-center w-screen">
       <div

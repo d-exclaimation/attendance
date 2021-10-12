@@ -7,8 +7,10 @@
 
 import { useMemo } from "react";
 
+/** CSV URI Template */
 const CSV_TEMPLATE = "data:text/csv;charset=utf-8,";
 
+/** Record type */
 type Record = {
   id: string;
   entryAt: Date;
@@ -17,6 +19,11 @@ type Record = {
   workHours: string;
 };
 
+/**
+ * React hook to efficiently compute CSV Links
+ * @param records Records information.
+ * @returns Memoized CSV Links
+ */
 export function useCsv(records: Record[]) {
   return useMemo(() => {
     const header = "Name,Entry At,Leave At, Work Hour(s)";

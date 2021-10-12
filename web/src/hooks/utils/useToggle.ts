@@ -7,6 +7,11 @@
 
 import { useCallback, useState } from "react";
 
+/**
+ * A hook for handling boolean value
+ * @param def Default value
+ * @returns A toggleable state
+ */
 export function useToggle(def?: boolean) {
   const [state, setState] = useState(def ?? false);
   const toggler = useCallback(

@@ -4,27 +4,52 @@
 //
 //  Created by d-exclaimation on 16:48.
 //
-
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Toast } from "../../interfaces/Toast";
+import { WithID } from "./../../interfaces/utilities";
 
-type ToastID = Toast & { id: string };
-
+/**
+ * A hook for handling toast related configurations.
+ *
+ * ---
+ * ```tsx
+ * const App: React.FC = () => {
+ *   const {toast, ...toastOptions} = useToast();
+ *
+ *   return (<div>
+ *     ...
+ *     <MagicToast {...toastOptions}/>
+ *   </div>);
+ * }
+ * ```
+ *
+ * @returns A set of options to configure a working MagicToast
+ */
 export function useToast() {
-  const [flags, setFlags] = useState<ToastID[]>([]);
+  const [flags, setFlags] = useState<Array<WithID<Toast>>>([]);
 
-  const toast = (newFlag: Toast) => {
-    const id = new Date().toISOString() + `${Math.random().toFixed(4)}`;
-    const newFlags = flags.slice();
-    newFlags.splice(0, 0, { ...newFlag, id });
+  const toast = useCallback(
+    (newFlag: Toast) =>
+      setFlags((prev) => {
+        const id = new Date().toISOString() + `${Math.random().toFixed(4)}`;
+        const newFlags = prev.slice();
+        newFlags.splice(0, 0, { ...newFlag, id });
 
-    setFlags(newFlags);
-  };
+        return newFlags;
+      }),
+    [setFlags]
+  );
 
-  const onDismissed: (id: string | number, analyticsEvent: any) => void =
-    () => {
-      setFlags(flags.slice(1));
-    };
+  type OnDismiss = (id: string | number, analyticsEvent: any) => void;
+
+  const onDismissed = useCallback<OnDismiss>(
+    (id) => {
+      setFlags((prev) =>
+        prev.filter(({ id: tid }) => typeof id === "string" && tid !== id)
+      );
+    },
+    [setFlags]
+  );
 
   return {
     toast,

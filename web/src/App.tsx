@@ -8,6 +8,10 @@ import Signup from "./components/auth/Signup";
 import MainScreen from "./components/main/MainScreen";
 import NotFound from "./components/shared/404";
 
+/**
+ * Primary App starting point with logic
+ * @returns The main application with routing and Context appkied.
+ */
 const App: React.FC = () => {
   const auth = useAuthProvider();
 

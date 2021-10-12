@@ -9,10 +9,12 @@ import {
 import { Maybe, useCheckLoginQuery, useRefreshMutation } from "../graphql/core";
 import { AuthStore } from "./AuthStore";
 
+/** User Account GraphQL Object  */
 type UserAccount =
   | Maybe<{ __typename: "User"; id: string; name: string }>
   | undefined;
 
+/** Auth Results */
 type Auth = {
   loading: boolean;
   user: UserAccount;
@@ -20,6 +22,7 @@ type Auth = {
   isAdmin: boolean;
 };
 
+/** Empty Auth object */
 const empty: Auth = {
   loading: false,
   user: undefined,
@@ -27,8 +30,13 @@ const empty: Auth = {
   isAdmin: false,
 };
 
+/** Auth React Context */
 export const AuthContext = createContext(empty);
 
+/**
+ * Provide Logic and functionality to a Auth Context.
+ * @returns Authorization related data that are binded to a state and refs.
+ */
 export function useAuthProvider(): Auth {
   const [inProgress, setProgress] = useState(true);
   const [, mutate] = useRefreshMutation();
@@ -38,12 +46,11 @@ export function useAuthProvider(): Auth {
   });
 
   const cronRef = useRef<NodeJS.Timeout | number | null>(null);
-  const triggerRef = useRef<boolean>(false);
 
   const updateAuth = useCallback(
     (expireAt: string, token: string) => {
       try {
-        if (cronRef) clearTimeout(cronRef.current as NodeJS.Timeout);
+        if (cronRef.current) clearTimeout(cronRef.current as any);
 
         const expiration = new Date(expireAt);
         const diff = expiration.getTime() - new Date().getTime();
@@ -53,8 +60,8 @@ export function useAuthProvider(): Auth {
         getUser();
         setProgress(false);
 
+        // Register a background / cron job to invalidate the token.
         cronRef.current = setTimeout(async () => {
-          triggerRef.current = false;
           await refresh();
         }, diff);
       } catch (_) {}
@@ -65,9 +72,6 @@ export function useAuthProvider(): Auth {
   );
 
   async function refresh() {
-    if (triggerRef.current) return;
-    triggerRef.current = true;
-
     const res = await mutate();
     if (!res.data || res.error) return;
 
@@ -98,6 +102,7 @@ export function useAuthProvider(): Auth {
   };
 }
 
+/** Access Auth Context */
 export function useAuth(): Auth {
   return useContext(AuthContext);
 }

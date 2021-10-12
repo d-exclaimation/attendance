@@ -32,9 +32,11 @@ const Content: React.FC = () => {
   const clock = useCallback(async () => {
     if (fetching || !data) return;
 
+    // Clocked In
     if (!!data.state && !data.state.leaveAt) {
       const id = data.state.id;
       const { data: res } = await clockOut({ id });
+
       if (!res) return;
       switch (res.clockOut.__typename) {
         case "Attendance":
@@ -57,6 +59,7 @@ const Content: React.FC = () => {
             status: "failure",
           });
       }
+      // Clocked out
     } else {
       const { data: res } = await clockIn();
       if (!res) return;
