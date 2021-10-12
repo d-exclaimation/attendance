@@ -6,7 +6,7 @@
 //
 
 import React, { useMemo } from "react";
-import { StatusQuery } from "../../graphql/core";
+import { StatusQuery } from "../../graphql/api";
 
 type Props = {
   data: StatusQuery;

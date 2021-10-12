@@ -5,38 +5,31 @@
 //  Created by d-exclaimation on 15:28.
 //
 
+import { GraphQLError } from "graphql";
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
-import { useRegisterMutation } from "../../graphql/core";
+import { useRegisterMutation } from "../../graphql/api";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import { useToast } from "../../hooks/utils/useToast";
 import MagicInput from "../semantic/MagicInput";
 import MagicToast from "../semantic/MagicToast";
 
 const Signup: React.FC = () => {
-  const [, mutation] = useRegisterMutation();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
   const { toast, ...toastProps } = useToast();
-  const onSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const { data, error } = await mutation({
-        credential: {
-          username: name,
-          password: pass,
-        },
-      });
 
-      const done = () => {
-        cName();
-        cPass();
-      };
+  const done = useCallback(() => {
+    cName();
+    cPass();
+  }, [cName, cPass]);
 
-      if (error || !data?.signup) {
+  const { mutate } = useRegisterMutation({
+    onSuccess: (data) => {
+      if (!data?.signup) {
         return toast({
           title: "Ada gangguan dari server!",
-          description: error?.message.toString() ?? "Mohon di tunggu",
+          description: "Mohon di tunggu",
           status: "warning",
         });
       }
@@ -66,7 +59,28 @@ const Signup: React.FC = () => {
           });
       }
     },
-    [cName, cPass, mutation, name, pass, toast]
+    onError: (error) =>
+      toast({
+        title: "Ada gangguan dari server!",
+        description:
+          error instanceof GraphQLError
+            ? error.message.toString()
+            : "Mohon di tunggu",
+        status: "warning",
+      }),
+  });
+
+  const onSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      mutate({
+        credential: {
+          username: name,
+          password: pass,
+        },
+      });
+    },
+    [mutate, name, pass]
   );
 
   return (

@@ -6,38 +6,30 @@
 //
 
 import React, { useCallback } from "react";
+import { useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import {
   useClockInMutation,
   useClockOutMutation,
   useStatusQuery,
-} from "../../graphql/core";
+} from "../../graphql/api";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useToast } from "../../hooks/utils/useToast";
 import MagicToast from "../semantic/MagicToast";
 import ContentInsider from "./ContentInsider";
 
 const Content: React.FC = () => {
+  const queryClient = useQueryClient();
   const { loading, isAdmin } = useAuth();
   const redirect = useRedirect();
-  const [{ fetching, data }, invalidate] = useStatusQuery({
-    pause: loading,
-    requestPolicy: "network-only",
-  });
-  const [, clockOut] = useClockOutMutation();
-  const [, clockIn] = useClockInMutation();
   const { toast, ...toastProps } = useToast();
+  const { isLoading, data } = useStatusQuery(undefined, {
+    enabled: !loading,
+  });
 
-  const clock = useCallback(async () => {
-    if (fetching || !data) return;
-
-    // Clocked In
-    if (!!data.state && !data.state.leaveAt) {
-      const id = data.state.id;
-      const { data: res } = await clockOut({ id });
-
-      if (!res) return;
+  const { mutate: clockOut } = useClockOutMutation({
+    onSuccess: (res) => {
       switch (res.clockOut.__typename) {
         case "Attendance":
           toast({
@@ -45,7 +37,7 @@ const Content: React.FC = () => {
             description: `Anda telah keluar kerja, informasi jam kerja anda telah ter update di database.`,
             status: "success",
           });
-          return invalidate();
+          return queryClient.invalidateQueries("Status");
         case "NotClockedIn":
           return toast({
             title: "Belum masuk kerja!!",
@@ -59,9 +51,11 @@ const Content: React.FC = () => {
             status: "failure",
           });
       }
-      // Clocked out
-    } else {
-      const { data: res } = await clockIn();
+    },
+  });
+
+  const { mutate: clockIn } = useClockInMutation({
+    onSuccess: (res) => {
       if (!res) return;
       switch (res.clockIn.__typename) {
         case "Attendance":
@@ -70,7 +64,7 @@ const Content: React.FC = () => {
             description: `Anda telah masuk kerja, informasi jam kerja anda telah ter update di database.`,
             status: "success",
           });
-          return invalidate();
+          return queryClient.invalidateQueries("Status");
         case "UserNotFound":
           return toast({
             title: "Account tidak ada!!",
@@ -78,10 +72,20 @@ const Content: React.FC = () => {
             status: "failure",
           });
       }
-    }
-  }, [clockIn, clockOut, fetching, data, invalidate, toast]);
+    },
+  });
 
-  if (fetching || !data) {
+  const clock = useCallback(async () => {
+    if (isLoading || !data) return;
+    if (!!data.state && !data.state.leaveAt) {
+      const id = data.state.id;
+      clockOut({ id });
+    } else {
+      clockIn({});
+    }
+  }, [clockIn, clockOut, isLoading, data]);
+
+  if (isLoading || !data) {
     return (
       <div className="flex justify-center items-center mt-3">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>

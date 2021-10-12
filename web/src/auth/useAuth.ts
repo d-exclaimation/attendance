@@ -1,3 +1,10 @@
+//
+//  useAuth.ts
+//  web
+//
+//  Created by d-exclaimation on 00:28.
+//
+
 import {
   createContext,
   useCallback,
@@ -6,7 +13,14 @@ import {
   useRef,
   useState,
 } from "react";
-import { Maybe, useCheckLoginQuery, useRefreshMutation } from "../graphql/core";
+import { useQueryClient } from "react-query";
+import {
+  Exact,
+  Maybe,
+  RefreshMutation,
+  useCheckLoginQuery,
+  useRefreshMutation,
+} from "../graphql/api";
 import { AuthStore } from "./AuthStore";
 
 /** User Account GraphQL Object  */
@@ -33,17 +47,23 @@ const empty: Auth = {
 /** Auth React Context */
 export const AuthContext = createContext(empty);
 
+type SuccessCallback = (
+  data: RefreshMutation,
+  variables: Exact<{
+    [key: string]: never;
+  }>,
+  context: unknown
+) => void | Promise<unknown>;
+
 /**
  * Provide Logic and functionality to a Auth Context.
  * @returns Authorization related data that are binded to a state and refs.
  */
 export function useAuthProvider(): Auth {
+  const queryClient = useQueryClient();
   const [inProgress, setProgress] = useState(true);
-  const [, mutate] = useRefreshMutation();
-  const [{ fetching, data }, getUser] = useCheckLoginQuery({
-    pause: true,
-    requestPolicy: "network-only",
-  });
+  const { mutate } = useRefreshMutation();
+  const { isLoading, data } = useCheckLoginQuery(undefined, { enabled: true });
 
   const cronRef = useRef<NodeJS.Timeout | number | null>(null);
 
@@ -57,36 +77,33 @@ export function useAuthProvider(): Auth {
 
         // Store value in the store
         AuthStore.shared.setAuth({ expireAt, token });
-        getUser();
         setProgress(false);
 
         // Register a background / cron job to invalidate the token.
-        cronRef.current = setTimeout(async () => {
-          await refresh();
-        }, diff);
+        cronRef.current = setTimeout(() => refresh(), diff);
       } catch (_) {}
     },
 
     /* eslint-disable */
-    [setProgress, getUser]
+    [setProgress]
   );
 
-  async function refresh() {
-    const res = await mutate();
-    if (!res.data || res.error) return;
+  function refresh() {
+    const onSuccess: SuccessCallback = (data) => {
+      const val = data.refresh;
 
-    const val = res.data.refresh;
-
-    switch (val.__typename) {
-      case "AccessCredentials":
-        const { expireAt, token } = val;
-        updateAuth(expireAt, token);
-        break;
-      default:
-        setProgress(false);
-        getUser();
-        break;
-    }
+      switch (val.__typename) {
+        case "AccessCredentials":
+          const { expireAt, token } = val;
+          updateAuth(expireAt, token);
+          break;
+        default:
+          setProgress(false);
+          break;
+      }
+      queryClient.invalidateQueries("CheckLogin");
+    };
+    mutate({}, { onSuccess });
   }
 
   useEffect(() => {
@@ -95,7 +112,7 @@ export function useAuthProvider(): Auth {
   }, []);
 
   return {
-    loading: inProgress || fetching,
+    loading: inProgress || isLoading,
     user: data?.me,
     updateAuth,
     isAdmin: (data?.me?.name.toLowerCase() ?? "not Admin") === "admin",
