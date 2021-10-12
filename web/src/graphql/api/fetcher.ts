@@ -16,6 +16,12 @@ function makeAuth(): object {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+/**
+ * Custom Network Fetcher for GraphQL Request
+ * @param query Query string used to send request
+ * @param variables Variables attached to the query
+ * @returns An async function to return the graphql data or throw an exceptions.
+ */
 export function gqlFetcher<TData, TVariables>(
   query: string,
   variables?: TVariables
