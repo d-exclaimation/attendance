@@ -5,10 +5,11 @@
 //  Created by d-exclaimation on 10:39.
 //
 
+import { GraphQLError } from "graphql";
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
-import { useLoginMutation } from "../../graphql/core";
+import { useLoginMutation } from "../../graphql/api";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import { useFormBind, usePassBind } from "../../hooks/utils/useFormBind";
 import { useToast } from "../../hooks/utils/useToast";
@@ -17,34 +18,30 @@ import MagicToast from "../semantic/MagicToast";
 
 const Login: React.FC = () => {
   const { updateAuth } = useAuth();
-  const [, mutation] = useLoginMutation();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
   const { val: pass, bind: bPass, clear: cPass, toggler, is } = usePassBind();
   const { toast, ...toastProps } = useToast();
 
-  const onSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const done = useCallback(
+    (username: string) => {
+      cName();
+      cPass();
+      const target = username.toLowerCase() === "admin" ? "/admin" : "/app";
+      setTimeout(() => redirect(target), 500);
+    },
+    [cName, cPass, redirect]
+  );
 
-      const { data, error } = await mutation({
-        credential: { username: name, password: pass },
-      });
-
-      if (!data?.login || error) {
+  const { mutate } = useLoginMutation({
+    onSuccess: (data) => {
+      if (!data?.login) {
         return toast({
           title: "Ada gangguan dari server!",
-          description: error?.message.toString() ?? "Mohon di tunggu",
+          description: "Mohon di tunggu",
           status: "warning",
         });
       }
-
-      const done = (username: string) => {
-        cName();
-        cPass();
-        const target = username.toLowerCase() === "admin" ? "/admin" : "/app";
-        setTimeout(() => redirect(target), 500);
-      };
 
       const res = data.login;
       switch (res.__typename) {
@@ -71,7 +68,25 @@ const Login: React.FC = () => {
           });
       }
     },
-    [cName, cPass, redirect, mutation, pass, name, updateAuth, toast]
+    onError: (error) =>
+      toast({
+        title: "Ada gangguan dari server!",
+        description:
+          error instanceof GraphQLError
+            ? error.message.toString()
+            : "Mohon di tunggu",
+        status: "warning",
+      }),
+  });
+
+  const onSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      mutate({
+        credential: { username: name, password: pass },
+      });
+    },
+    [mutate, pass, name]
   );
 
   return (

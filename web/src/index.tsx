@@ -1,15 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "urql";
+import { QueryClientProvider } from "react-query";
 import App from "./App";
-import { client } from "./graphql/client";
+import { queryClient } from "./graphql/client";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider value={client}>
+    <QueryClientProvider client={queryClient}>
       <App />
-    </Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

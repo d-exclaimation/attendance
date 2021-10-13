@@ -8,24 +8,24 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
-import { useAdminPanelQuery } from "../../graphql/core";
+import { useAdminPanelQuery } from "../../graphql/api";
 import { useQueryParam } from "../../hooks/router/useQueryParam";
 import { useRedirect } from "../../hooks/router/useRedirect";
 import RecordTable from "./RecordTable";
 
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
-  const qLast = useQueryParam("lat");
+  const qLast = useQueryParam("last");
 
   const last = useMemo(() => {
     const lim = parseInt(qLast ?? "10");
     return isNaN(lim) ? 10 : lim;
   }, [qLast]);
 
-  const [{ fetching, data, error }] = useAdminPanelQuery({
-    variables: { last },
-    pause: loading,
-  });
+  const { isLoading, data, error } = useAdminPanelQuery(
+    { last },
+    { enabled: !loading }
+  );
 
   const redirect = useRedirect();
 
@@ -43,7 +43,7 @@ const Panel: React.FC = () => {
     );
   }, [data]);
 
-  if (loading || fetching) {
+  if (loading || isLoading) {
     return (
       <div className="flex justify-center items-center mt-3">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
