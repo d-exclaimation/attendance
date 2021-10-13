@@ -123,6 +123,7 @@ export const setRefreshCookie = (res: Response, t: RefreshPermission) => {
   res.cookie("jid", token, {
     httpOnly: true,
     sameSite: "none",
+    maxAge: 1000 * expiration,
     secure: true,
   });
 };

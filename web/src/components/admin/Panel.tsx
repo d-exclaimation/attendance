@@ -9,18 +9,17 @@ import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import { useAdminPanelQuery } from "../../graphql/api";
-import { useQueryParam } from "../../hooks/router/useQueryParam";
+import { useTypedQueryParam } from "../../hooks/router/useQueryParam";
 import { useRedirect } from "../../hooks/router/useRedirect";
+import { convertPanel, fallbackParseInt } from "../../utils/convert";
 import RecordTable from "./RecordTable";
 
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
-  const qLast = useQueryParam("last");
-
-  const last = useMemo(() => {
-    const lim = parseInt(qLast ?? "10");
-    return isNaN(lim) ? 10 : lim;
-  }, [qLast]);
+  const last = useTypedQueryParam("last", {
+    parser: fallbackParseInt(10),
+    fallback: () => 10,
+  });
 
   const { isLoading, data, error } = useAdminPanelQuery(
     { last },
@@ -29,19 +28,10 @@ const Panel: React.FC = () => {
 
   const redirect = useRedirect();
 
-  const panelInfo = useMemo(() => {
-    return (
-      data?.recorded?.map(
-        ({ id, entryAt, leaveAt, user: { name }, workHours }) => ({
-          id,
-          entryAt: new Date(entryAt),
-          leaveAt: leaveAt ? new Date(leaveAt) : undefined,
-          name,
-          workHours,
-        })
-      ) ?? []
-    );
-  }, [data]);
+  const panelInfo = useMemo(
+    () => data?.recorded?.map(convertPanel) ?? [],
+    [data]
+  );
 
   if (loading || isLoading) {
     return (

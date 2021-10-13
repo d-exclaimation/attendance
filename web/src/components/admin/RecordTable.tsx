@@ -7,6 +7,7 @@
 
 import React from "react";
 import { useCsv } from "../../hooks/utils/useCsv";
+import { ReactComponent as DownloadIcon } from "./download.svg";
 
 type Props = {
   rows: RecordRow[];
@@ -30,18 +31,7 @@ const RecordTable: React.FC<Props> = ({ rows }) => {
           className="flex flex-row px-6 py-2 text-left text-xs font-medium rounded-md hover:bg-indigo-50 hover:bg-opacity-80 text-indigo-600 uppercase"
           href={csvLink}
         >
-          <svg viewBox="0 0 24 24" className="h-4 -mt-0.5 mr-1">
-            <g
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-            >
-              <path d="M12.002.751v15M7.502 11.251l4.5 4.5 4.5-4.5"></path>
-              <path d="M15.752 4.5H18a3 3 0 0 1 3 3v12.75a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3h2.25"></path>
-            </g>
-          </svg>
+          <DownloadIcon />
           csv
         </a>
       </div>

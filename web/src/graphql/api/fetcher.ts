@@ -4,8 +4,9 @@
 //
 //  Created by d-exclaimation on 05:25.
 //
-
+import { GraphQLError } from "graphql";
 import { AuthStore } from "./../../auth/AuthStore";
+import { artifacts } from "./../../constant/artifacts";
 
 /**
  * Make a header object given the AuthStore
@@ -27,7 +28,7 @@ export function gqlFetcher<TData, TVariables>(
   variables?: TVariables
 ) {
   return async (): Promise<TData> => {
-    const res = await fetch("http://localhost:4000/graphql", {
+    const res = await fetch(artifacts.url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +43,7 @@ export function gqlFetcher<TData, TVariables>(
     if (json.errors) {
       const { message } = json.errors[0];
 
-      throw new Error(message);
+      throw new GraphQLError(message);
     }
 
     return json.data;
