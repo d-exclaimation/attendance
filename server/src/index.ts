@@ -31,6 +31,7 @@ async function main() {
     ],
   };
 
+  app.set("proxy", 1);
   app.use(cookieParser());
 
   const server = new ApolloServer({
