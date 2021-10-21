@@ -12,7 +12,7 @@ import { artifacts } from "./../../constant/artifacts";
  * Make a header object given the AuthStore
  * @returns A header object if token exist
  */
-function makeAuth(): object {
+function makeAuth(): { [key: string]: string } {
   const token = AuthStore.shared.token;
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

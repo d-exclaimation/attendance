@@ -6,4 +6,4 @@
 //
 
 /** Utilities type for something with ID */
-export type WithID<T> = T & { id: string };
+export type I<T> = T & { id: string };

@@ -12,10 +12,10 @@ import InfoIcon from "@atlaskit/icon/glyph/info";
 import WarningIcon from "@atlaskit/icon/glyph/warning";
 import React from "react";
 import { Toast } from "../../interfaces/Toast";
-import { WithID } from "../../interfaces/utilities";
+import { I } from "../../interfaces/utilities";
 
 type Props = {
-  flags: WithID<Toast>[];
+  flags: I<Toast>[];
   onDismissed: (id: string | number, analyticsEvent: any) => void;
 };
 
@@ -26,20 +26,18 @@ const MagicToast: React.FC<Props> = ({ flags, onDismissed }) => {
     switch (status) {
       case "success":
         return (
-          <SuccessIcon primaryColor={"#00be3e"} label={status} size="medium" />
+          <SuccessIcon primaryColor="#00be3e" label={status} size="medium" />
         );
       case "failure":
         return (
-          <FailureIcon primaryColor={"#ff000e"} label={status} size="medium" />
+          <FailureIcon primaryColor="#ff000e" label={status} size="medium" />
         );
       case "warning":
         return (
-          <WarningIcon primaryColor={"#ffce00"} label={status} size="medium" />
+          <WarningIcon primaryColor="#ffce00" label={status} size="medium" />
         );
       case "info":
-        return (
-          <InfoIcon primaryColor={"#0065ff"} label={status} size="medium" />
-        );
+        return <InfoIcon primaryColor="#0065ff" label={status} size="medium" />;
     }
   };
 

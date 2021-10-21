@@ -63,7 +63,11 @@ export function useAuthProvider(): Auth {
   const queryClient = useQueryClient();
   const [inProgress, setProgress] = useState(true);
   const { mutate } = useRefreshMutation();
-  const { isLoading, data } = useCheckLoginQuery(undefined, { enabled: true });
+  const { isLoading, data } = useCheckLoginQuery(undefined, {
+    enabled: true,
+    retryOnMount: true,
+    staleTime: 1000 * 60 * 30,
+  });
 
   const cronRef = useRef<NodeJS.Timeout | number | null>(null);
 
@@ -81,6 +85,7 @@ export function useAuthProvider(): Auth {
 
         // Register a background / cron job to invalidate the token.
         cronRef.current = setTimeout(() => refresh(), diff);
+        queryClient.invalidateQueries("CheckLogin");
       } catch (_) {}
     },
 
@@ -99,9 +104,9 @@ export function useAuthProvider(): Auth {
           break;
         default:
           setProgress(false);
+          queryClient.invalidateQueries("CheckLogin");
           break;
       }
-      queryClient.invalidateQueries("CheckLogin");
     };
     mutate({}, { onSuccess });
   }

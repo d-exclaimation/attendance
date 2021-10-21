@@ -108,7 +108,7 @@ const Signup: React.FC = () => {
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
-            Sudah ada account?{" "}
+            Sudah ada account?
             <Link className="text-indigo-600 hover:text-indigo-400" to="/login">
               Login
             </Link>

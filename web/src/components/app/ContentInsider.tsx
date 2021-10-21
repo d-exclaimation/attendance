@@ -60,7 +60,7 @@ const ContentInsider: React.FC<Props> = ({ data, clock }: Props) => {
         {footer}
       </div>
       <button
-        className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12  rounded-full select-none shadow-2xl _pressable"
+        className="text-8xl md:text-9xl w-52 h-52 md:w-64 md:h-64 m-12 rounded-full select-none shadow-2xl _pressable"
         onClick={clock}
       >
         {isAtWork ? "⏳" : "⌛️"}

@@ -8,4 +8,10 @@
 import { QueryClient } from "react-query";
 
 /** React Query Client */
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60,
+    },
+  },
+});

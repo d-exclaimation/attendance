@@ -6,7 +6,7 @@
 //
 import { useCallback, useState } from "react";
 import { Toast } from "../../interfaces/Toast";
-import { WithID } from "./../../interfaces/utilities";
+import { I } from "./../../interfaces/utilities";
 
 /**
  * A hook for handling toast related configurations.
@@ -26,7 +26,7 @@ import { WithID } from "./../../interfaces/utilities";
  * @returns A set of options to configure a working MagicToast
  */
 export function useToast() {
-  const [flags, setFlags] = useState<Array<WithID<Toast>>>([]);
+  const [flags, setFlags] = useState<Array<I<Toast>>>([]);
 
   const toast = useCallback(
     (newFlag: Toast) =>
