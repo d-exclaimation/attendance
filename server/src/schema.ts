@@ -6,7 +6,7 @@
 //
 
 import { fieldAuthorizePlugin, makeSchema } from "nexus";
-import path from "path/posix";
+import path from "path";
 import { __prod__ } from "./constant/environment";
 import * as types from "./graphql";
 
