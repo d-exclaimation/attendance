@@ -36,6 +36,7 @@
     "graphql": "^15.5.1",
     "graphql-depth-limit": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
-    "nexus": "^1.1.0"
+    "nexus": "^1.1.0",
+    "path-posix": "^1.0.0"
   }
 }
