@@ -6,5 +6,5 @@
 //
 
 export const artifacts = {
-  url: "http://localhost:4000/graphql",
+  url: process.env["REACT_APP_URL"] || "http://localhost:4000/graphql",
 };
