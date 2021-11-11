@@ -62,7 +62,11 @@ type SuccessCallback = (
 export function useAuthProvider(): Auth {
   const queryClient = useQueryClient();
   const [inProgress, setProgress] = useState(true);
-  const { mutate } = useRefreshMutation();
+  const { mutate } = useRefreshMutation({
+    onError: () => {
+      setProgress(false);
+    },
+  });
   const { isLoading, data } = useCheckLoginQuery(undefined, {
     enabled: true,
     retryOnMount: true,
