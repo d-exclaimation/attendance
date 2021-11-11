@@ -28,11 +28,16 @@ async function main() {
       "https://studio.apollographql.com",
       "http://localhost:3000",
       "z-attendance.netlify.app",
+      "att-zentax.netlify.app",
     ],
   };
 
   app.set("proxy", 1);
   app.use(cookieParser());
+  app.get("/", (_, res) => {
+    // res.redirect(301, "https://google.com");
+    res.redirect(301, "https://att-zentax.netlify.app");
+  });
 
   const server = new ApolloServer({
     schema,
