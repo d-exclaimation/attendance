@@ -51,7 +51,17 @@ async function main() {
   await server.start();
   server.applyMiddleware({
     app,
-    cors: corsOptions,
+    cors: {
+      credentials: true,
+      origin: [
+        "https://studio.apollographql.com",
+        "http://localhost:3000",
+        "z-attendance.netlify.app",
+        "http://att-zentax.netlify.app",
+        "att-zentax.netlify.app",
+        "https://att-zentax.netlify.app",
+      ],
+    },
   });
 
   httpServer.listen(__port__, () => {
