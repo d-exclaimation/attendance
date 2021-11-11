@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build; echo \"/* /index.html 200\" > ./build/_redirects",
     "test": "craco test",
     "eject": "react-scripts eject",
     "gen": "graphql-codegen --config codegen.yml"

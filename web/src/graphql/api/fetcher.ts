@@ -30,6 +30,7 @@ export function gqlFetcher<TData, TVariables>(
   return async (): Promise<TData> => {
     const res = await fetch(artifacts.url, {
       method: "POST",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
         ...makeAuth(),

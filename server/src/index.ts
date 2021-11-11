@@ -22,15 +22,6 @@ async function main() {
   });
   const app = express();
   const httpServer = createServer(app);
-  const corsOptions = {
-    credentials: true,
-    origin: [
-      "https://studio.apollographql.com",
-      "http://localhost:3000",
-      "z-attendance.netlify.app",
-      "att-zentax.netlify.app",
-    ],
-  };
 
   app.set("proxy", 1);
   app.use(cookieParser());
