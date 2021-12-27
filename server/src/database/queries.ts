@@ -52,6 +52,30 @@ export async function allAttendance(
   }
 }
 
+/** Get this month attendance */
+export async function monthlyAttendance(
+  db: PrismaClient
+): Promise<Attendance[]> {
+  const now = new Date();
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  try {
+    return await db.attendance.findMany({
+      orderBy: {
+        entryAt: "desc",
+      },
+      where: {
+        entryAt: {
+          gte: thisMonth,
+          lte: nextMonth,
+        },
+      },
+    });
+  } catch (_) {
+    return [];
+  }
+}
+
 /** Get the most recent attendance to know the state */
 export async function attendanceState(
   db: PrismaClient,

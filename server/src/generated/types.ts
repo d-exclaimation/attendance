@@ -123,6 +123,7 @@ export interface NexusGenFieldTypes {
     employees: NexusGenRootTypes['User'][]; // [User!]!
     history: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     me: NexusGenRootTypes['User'] | null; // User
+    monthly: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     recorded: NexusGenRootTypes['Attendance'][]; // [Attendance!]!
     state: NexusGenRootTypes['Attendance'] | null; // Attendance
   }
@@ -181,6 +182,7 @@ export interface NexusGenFieldTypeNames {
     employees: 'User'
     history: 'Attendance'
     me: 'User'
+    monthly: 'Attendance'
     recorded: 'Attendance'
     state: 'Attendance'
   }

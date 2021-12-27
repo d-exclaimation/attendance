@@ -78,8 +78,11 @@ type Query {
   """Check for user data"""
   me: User
 
+  """Get last records for all users this month"""
+  monthly: [Attendance!]!
+
   """Get last records for all users"""
-  recorded(last: Int!): [Attendance!]!
+  recorded(last: Int!): [Attendance!]! @deprecated(reason: "Use 'monthly' instead to filter by month instead by count")
 
   """Get the last record whether it exist or not"""
   state: Attendance

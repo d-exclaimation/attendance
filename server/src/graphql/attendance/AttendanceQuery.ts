@@ -10,6 +10,7 @@ import {
   allAttendance,
   attendanceHistory,
   attendanceState,
+  monthlyAttendance,
 } from "../../database/queries";
 import { convertAttendance } from "../../models/converters";
 import { isAdmin } from "../../utils/auth";
@@ -24,6 +25,7 @@ export const AttendanceQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field("recorded", {
       type: "Attendance",
+      deprecation: "Use 'monthly' instead to filter by month instead by count",
       description: "Get last records for all users",
       args: { last: nonNull(intArg()) },
       authorize: isAuthAdmin,
@@ -35,6 +37,22 @@ export const AttendanceQuery = extendType({
         const uid = session?.id;
         if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");
         const res = await allAttendance(db, last);
+        return res.map(convertAttendance);
+      },
+    });
+
+    t.nonNull.list.nonNull.field("monthly", {
+      type: "Attendance",
+      description: "Get last records for all users this month",
+      authorize: isAuthAdmin,
+      /**
+       * All record query (Most recent to limit)
+       * @returns List of recent Attendance
+       */
+      resolve: async (_s, _a, { db, session }) => {
+        const uid = session?.id;
+        if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");
+        const res = await monthlyAttendance(db);
         return res.map(convertAttendance);
       },
     });
