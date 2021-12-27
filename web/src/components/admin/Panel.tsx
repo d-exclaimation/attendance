@@ -9,27 +9,22 @@ import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import { useAdminPanelQuery } from "../../graphql/api";
-import { useTypedQueryParam } from "../../hooks/router/useQueryParam";
 import { useRedirect } from "../../hooks/router/useRedirect";
-import { convertPanel, fallbackParseInt } from "../../utils/convert";
+import { convertPanel } from "../../utils/convert";
 import RecordTable from "./RecordTable";
 
 const Panel: React.FC = () => {
   const { isAdmin, loading } = useAuth();
-  const last = useTypedQueryParam("last", {
-    parser: fallbackParseInt(10),
-    fallback: () => 10,
-  });
 
   const { isLoading, data, error } = useAdminPanelQuery(
-    { last },
+    {},
     { enabled: !loading }
   );
 
   const redirect = useRedirect();
 
   const panelInfo = useMemo(
-    () => data?.recorded?.map(convertPanel) ?? [],
+    () => data?.monthly?.map(convertPanel) ?? [],
     [data]
   );
 

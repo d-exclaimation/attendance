@@ -1,5 +1,5 @@
-query AdminPanel($last: Int!) {
-  recorded(last: $last) {
+query AdminPanel {
+  monthly {
     id
     entryAt
     leaveAt

@@ -26,14 +26,17 @@ type Record = {
  */
 export function useCsv(records: Record[]) {
   return useMemo(() => {
-    const header = "Name,Entry At,Leave At, Work Hour(s)";
-    const content = records.map(({ name, entryAt, leaveAt, workHours }) => {
-      const [entryDateTime, leaveDateTime] = [
-        entryAt.toLocaleString(),
-        leaveAt?.toLocaleString() ?? "-",
-      ];
-      return `${name},"${entryDateTime}","${leaveDateTime}",${workHours}`;
-    });
+    const header = 'No,Name,Masuk,Keluar,"Jam kerja"';
+    const content = records.map(
+      ({ name, entryAt, leaveAt, workHours }, index) => {
+        const [no, entryDateTime, leaveDateTime] = [
+          index + 1,
+          entryAt.toLocaleString("id-ID"),
+          leaveAt?.toLocaleString("id-ID") ?? "-",
+        ];
+        return `${no},${name},"${entryDateTime}","${leaveDateTime}","${workHours}"`;
+      }
+    );
     const result = [header, ...content].join("\n");
     return encodeURI(CSV_TEMPLATE + result);
   }, [records]);

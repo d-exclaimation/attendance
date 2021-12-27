@@ -99,12 +99,12 @@ const RecordTable: React.FC<Props> = ({ rows }) => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {entryAt.toLocaleString()}
+                          {entryAt.toLocaleString("id-ID")}
                         </div>
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {leaveAt?.toLocaleString() ?? "-"}
+                        {leaveAt?.toLocaleString("id-ID") ?? "-"}
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
