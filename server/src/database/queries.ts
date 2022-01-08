@@ -54,11 +54,15 @@ export async function allAttendance(
 
 /** Get this month attendance */
 export async function monthlyAttendance(
-  db: PrismaClient
+  db: PrismaClient,
+  offset: number = 0
 ): Promise<Attendance[]> {
   const now = new Date();
-  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const [year, month] = [now.getFullYear(), now.getMonth() + offset];
+  const [thisMonth, nextMonth] = [
+    new Date(year, month, 1),
+    new Date(year, month + 1, 0),
+  ];
   try {
     return await db.attendance.findMany({
       orderBy: {

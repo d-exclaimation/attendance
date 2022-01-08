@@ -45,14 +45,17 @@ export const AttendanceQuery = extendType({
       type: "Attendance",
       description: "Get last records for all users this month",
       authorize: isAuthAdmin,
+      args: {
+        offset: nonNull(intArg({ default: -1 })),
+      },
       /**
-       * All record query (Most recent to limit)
+       * All record query (Most recent to this month by an offset)
        * @returns List of recent Attendance
        */
-      resolve: async (_s, _a, { db, session }) => {
+      resolve: async (_s, { offset }, { db, session }) => {
         const uid = session?.id;
         if (!uid || !isAdmin(uid)) throw Error("Shouldn't happen");
-        const res = await monthlyAttendance(db);
+        const res = await monthlyAttendance(db, offset);
         return res.map(convertAttendance);
       },
     });

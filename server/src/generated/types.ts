@@ -223,6 +223,9 @@ export interface NexusGenArgTypes {
     history: { // args
       last: number; // Int!
     }
+    monthly: { // args
+      offset: number; // Int!
+    }
     recorded: { // args
       last: number; // Int!
     }

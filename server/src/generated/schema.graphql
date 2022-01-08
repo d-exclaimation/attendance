@@ -79,7 +79,7 @@ type Query {
   me: User
 
   """Get last records for all users this month"""
-  monthly: [Attendance!]!
+  monthly(offset: Int! = -1): [Attendance!]!
 
   """Get last records for all users"""
   recorded(last: Int!): [Attendance!]! @deprecated(reason: "Use 'monthly' instead to filter by month instead by count")
