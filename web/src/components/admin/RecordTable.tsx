@@ -24,7 +24,7 @@ type RecordRow = {
 const RecordTable: React.FC<Props> = ({ rows }) => {
   const csvLink = useCsv(rows);
   return (
-    <div className="flex flex-col w-full my-2">
+    <div className="flex flex-col w-full my-2 max-h-96">
       <div className="flex justify-end my-2">
         <a
           download="record.csv"
