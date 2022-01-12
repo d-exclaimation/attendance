@@ -1,12 +1,8 @@
 query AdminPanel {
-  monthly {
-    id
-    entryAt
-    leaveAt
-    user {
-      id
-      name
-    }
-    workHours
+  thisMonth: monthly {
+    ...Record
+  }
+  lastMonth: monthly(offset: -1) {
+    ...Record
   }
 }

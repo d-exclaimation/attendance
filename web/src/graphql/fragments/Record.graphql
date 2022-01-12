@@ -1,0 +1,10 @@
+fragment Record on Attendance {
+  id
+  entryAt
+  leaveAt
+  user {
+    id
+    name
+  }
+  workHours
+}

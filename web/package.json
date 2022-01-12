@@ -26,7 +26,9 @@
     "build": "craco build; echo \"/* /index.html 200\" > ./build/_redirects",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "gen": "graphql-codegen --config codegen.yml"
+    "gen": "graphql-codegen --config codegen.yml",
+    "deploy": "netlify deploy --prod",
+    "build:deploy": "craco build; echo \"/* /index.html 200\" > ./build/_redirects; netlify deploy --prod"
   },
   "eslintConfig": {
     "extends": [

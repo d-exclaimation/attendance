@@ -23,8 +23,13 @@ const Panel: React.FC = () => {
 
   const redirect = useRedirect();
 
-  const panelInfo = useMemo(
-    () => data?.monthly?.map(convertPanel) ?? [],
+  const thisMonthRecords = useMemo(
+    () => data?.thisMonth?.map(convertPanel) ?? [],
+    [data]
+  );
+
+  const lastMonthRecords = useMemo(
+    () => data?.lastMonth?.map(convertPanel) ?? [],
     [data]
   );
 
@@ -52,7 +57,7 @@ const Panel: React.FC = () => {
       <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
         Admin Panel
       </div>
-      <RecordTable rows={panelInfo} />
+      <RecordTable thisMonth={thisMonthRecords} lastMonth={lastMonthRecords} />
     </div>
   );
 };

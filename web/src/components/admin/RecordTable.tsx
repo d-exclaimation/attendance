@@ -5,12 +5,14 @@
 //  Created by d-exclaimation on 15:22.
 //
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useCsv } from "../../hooks/utils/useCsv";
-import { ReactComponent as DownloadIcon } from "./download.svg";
+import { monthName } from "../../utils/date";
+import DownloadDropdown from "./DownloadDropdown";
 
 type Props = {
-  rows: RecordRow[];
+  thisMonth: RecordRow[];
+  lastMonth: RecordRow[];
 };
 
 type RecordRow = {
@@ -21,19 +23,20 @@ type RecordRow = {
   workHours: string;
 };
 
-const RecordTable: React.FC<Props> = ({ rows }) => {
-  const csvLink = useCsv(rows);
+const RecordTable: React.FC<Props> = ({ thisMonth, lastMonth }) => {
+  const thisMonthLink = useCsv(thisMonth);
+  const thisMonthName = useMemo(() => monthName(), []);
+  const lastMonthLink = useCsv(lastMonth);
+  const lastMonthName = useMemo(() => monthName(1), []);
   return (
     <div className="flex flex-col w-full my-2 max-h-96">
       <div className="flex justify-end my-2">
-        <a
-          download="record.csv"
-          className="flex flex-row px-6 py-2 text-left text-xs font-medium rounded-md hover:bg-indigo-50 hover:bg-opacity-80 text-indigo-600 uppercase"
-          href={csvLink}
-        >
-          <DownloadIcon />
-          csv
-        </a>
+        <DownloadDropdown
+          options={{
+            [thisMonthName]: thisMonthLink,
+            [lastMonthName]: lastMonthLink,
+          }}
+        />
       </div>
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -75,7 +78,7 @@ const RecordTable: React.FC<Props> = ({ rows }) => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {rows.map(({ leaveAt, id, name, entryAt, workHours }) => {
+                {thisMonth.map(({ leaveAt, id, name, entryAt, workHours }) => {
                   const seed = sanitised(name);
                   const isAtWork = !leaveAt;
                   return (

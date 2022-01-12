@@ -41,7 +41,7 @@ export const convertPanel = ({
   leaveAt,
   user: { name },
   workHours,
-}: AdminPanelQuery["monthly"][0]) => ({
+}: AdminPanelQuery["thisMonth"][0]) => ({
   id,
   entryAt: new Date(entryAt),
   leaveAt: leaveAt ? new Date(leaveAt) : undefined,

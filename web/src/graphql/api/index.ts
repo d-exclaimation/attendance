@@ -119,6 +119,11 @@ export type QueryRecordedArgs = {
 };
 
 
+export type QueryMonthlyArgs = {
+  offset?: Scalars['Int'];
+};
+
+
 export type QueryHistoryArgs = {
   last: Scalars['Int'];
 };
@@ -163,6 +168,8 @@ export type UserNotFound = {
   username: Scalars['String'];
 };
 
+export type RecordFragment = { __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string>, workHours: string, user: { __typename: 'User', id: string, name: string } };
+
 export type ClockInMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -197,7 +204,7 @@ export type RegisterMutation = { __typename: 'Mutation', signup: { __typename: '
 export type AdminPanelQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AdminPanelQuery = { __typename: 'Query', monthly: Array<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string>, workHours: string, user: { __typename: 'User', id: string, name: string } }> };
+export type AdminPanelQuery = { __typename: 'Query', thisMonth: Array<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string>, workHours: string, user: { __typename: 'User', id: string, name: string } }>, lastMonth: Array<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string>, workHours: string, user: { __typename: 'User', id: string, name: string } }> };
 
 export type CheckLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -209,7 +216,18 @@ export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type StatusQuery = { __typename: 'Query', state?: Maybe<{ __typename: 'Attendance', id: string, entryAt: string, leaveAt?: Maybe<string> }> };
 
-
+export const RecordFragmentDoc = `
+    fragment Record on Attendance {
+  id
+  entryAt
+  leaveAt
+  user {
+    id
+    name
+  }
+  workHours
+}
+    `;
 export const ClockInDocument = `
     mutation ClockIn {
   clockIn {
@@ -336,18 +354,14 @@ export const useRegisterMutation = <
     );
 export const AdminPanelDocument = `
     query AdminPanel {
-  monthly {
-    id
-    entryAt
-    leaveAt
-    user {
-      id
-      name
-    }
-    workHours
+  thisMonth: monthly {
+    ...Record
+  }
+  lastMonth: monthly(offset: -1) {
+    ...Record
   }
 }
-    `;
+    ${RecordFragmentDoc}`;
 export const useAdminPanelQuery = <
       TData = AdminPanelQuery,
       TError = unknown
