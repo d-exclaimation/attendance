@@ -46,7 +46,7 @@ export const AttendanceQuery = extendType({
       description: "Get last records for all users this month",
       authorize: isAuthAdmin,
       args: {
-        offset: nonNull(intArg({ default: -1 })),
+        offset: nonNull(intArg({ default: 0 })),
       },
       /**
        * All record query (Most recent to this month by an offset)
