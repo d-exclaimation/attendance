@@ -14,11 +14,13 @@ import LoadingScreen from "./LoadingScreen";
  */
 const MainScreen: React.FC = () => {
   return (
-    <div className="flex flex-col items-center text-indigo-500">
+    <div className="flex flex-col items-center text-blue-500">
       <div className="_flash-card">
-        <div className="text-2xl md:text-4xl font-mono m-2 mb-4 animate-pulse">
-          Welcome
-        </div>
+        <img
+          src="/zentax.jpeg"
+          alt="Welcome"
+          className="animate-pulse mb-4 m-2 w-56 md:w-72 lg:w-96"
+        />
       </div>
       <LoadingScreen />
     </div>

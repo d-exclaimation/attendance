@@ -113,8 +113,8 @@ const RecordTable: React.FC<Props> = ({ thisMonth, lastMonth }) => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            isAtWork ? "bg-green-100" : "bg-indigo-100"
-                          } ${isAtWork ? "text-green-800" : "text-indigo-800"}`}
+                            isAtWork ? "bg-green-100" : "bg-blue-100"
+                          } ${isAtWork ? "text-green-800" : "text-blue-800"}`}
                         >
                           {isAtWork ? "At work" : "Out of work"}
                         </span>

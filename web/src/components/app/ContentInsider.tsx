@@ -46,14 +46,14 @@ const ContentInsider: React.FC<Props> = ({ data, clock }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center w-screen">
       <div
-        className={`font-mono text-xl md:text-3xl mb-2 mx-2 text-indigo-500 ${
+        className={`font-mono text-xl md:text-3xl mb-2 mx-2 text-blue-500 ${
           isAtWork && "animate-pulse"
         } text-center`}
       >
         {details}
       </div>
       <div
-        className={`font-mono text-xs md:text-xl mb-1 mx-2 text-indigo-400 ${
+        className={`font-mono text-xs md:text-xl mb-1 mx-2 text-blue-400 ${
           isAtWork && "animate-pulse"
         } text-center`}
       >

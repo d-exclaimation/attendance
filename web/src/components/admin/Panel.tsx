@@ -36,7 +36,7 @@ const Panel: React.FC = () => {
   if (loading || isLoading) {
     return (
       <div className="flex justify-center items-center mt-3">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-400"></div>
       </div>
     );
   }
@@ -50,11 +50,11 @@ const Panel: React.FC = () => {
     <div className="flex flex-col items-center w-11/12 justify-center _card">
       <Link
         to="/login"
-        className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 hover:text-indigo-300"
+        className="absolute top-2 right-3 text-xs font-mono font-light text-blue-600 hover:text-blue-300"
       >
         Logout
       </Link>
-      <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
+      <div className="font-mono text-xl md:text-3xl mb-3 text-blue-500 animate-pulse">
         Admin Panel
       </div>
       <RecordTable thisMonth={thisMonthRecords} lastMonth={lastMonthRecords} />

@@ -88,7 +88,7 @@ const Content: React.FC = () => {
   if (isLoading || !data) {
     return (
       <div className="flex justify-center items-center mt-3">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-indigo-400"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-400"></div>
       </div>
     );
   }
@@ -104,7 +104,7 @@ const Content: React.FC = () => {
       <ContentInsider data={data} clock={clock} />
       <Link
         to="/login"
-        className="absolute top-2 right-3 text-xs font-mono font-light text-indigo-600 hover:text-indigo-300"
+        className="absolute top-2 right-3 text-xs font-mono font-light text-blue-600 hover:text-blue-300"
       >
         Logout
       </Link>

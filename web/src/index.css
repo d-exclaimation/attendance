@@ -34,7 +34,7 @@ code {
   display: block;
   height: 4px;
   width: 100%;
-  background: rgba(129, 120, 255);
+  background: rgba(96, 165, 250);
   transform: scaleX(0);
   transform-origin: 0%;
   transition: transform 500ms ease;
@@ -58,7 +58,7 @@ code {
 ._text-field:focus-within ._form-label,
 ._input:not(:placeholder-shown) + ._form-label {
   transform: scale(0.7) translateY(-2rem);
-  color: rgba(79, 70, 229);
+  color: rgba(59, 130, 246);
   opacity: 1;
 }
 

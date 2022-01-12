@@ -85,7 +85,7 @@ const Signup: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-10/12 md:w-6/12 lg:w-4/12 justify-center _card">
-      <div className="font-mono text-xl md:text-3xl mb-3 text-indigo-500 animate-pulse">
+      <div className="font-mono text-xl md:text-3xl mb-3 text-blue-500 animate-pulse">
         Daftar account
       </div>
       <form className="w-full" onSubmit={onSubmit}>
@@ -108,14 +108,14 @@ const Signup: React.FC = () => {
         </MagicInput>
         <div className="flex flex-row items-center justify-between w-full p-1 mt-2">
           <div className="text-xs">
-            Sudah ada account?
-            <Link className="text-indigo-600 hover:text-indigo-400" to="/login">
+            Sudah ada account?{" "}
+            <Link className="text-blue-600 hover:text-blue-400" to="/login">
               Login
             </Link>
           </div>
           <button
             type="submit"
-            className="px-4 py-1 text-sm text-indigo-600 rounded hover:bg-indigo-50 hover:bg-opacity-80"
+            className="px-4 py-1 text-sm text-blue-600 rounded hover:bg-blue-50 hover:bg-opacity-80"
           >
             Kirim
           </button>

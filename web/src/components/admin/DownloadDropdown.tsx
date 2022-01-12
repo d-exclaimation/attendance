@@ -42,7 +42,7 @@ const DownloadDropdown: React.FC<Props> = ({ options }) => {
   return (
     <div className="relative">
       <button
-        className="flex flex-row px-6 py-2 text-left text-xs font-medium rounded-md hover:bg-indigo-50 hover:bg-opacity-80 text-indigo-600 uppercase"
+        className="flex flex-row px-6 py-2 text-left text-xs font-medium rounded-md hover:bg-blue-50 hover:bg-opacity-80 text-blue-600 uppercase"
         onClick={() => {
           toggler();
         }}
