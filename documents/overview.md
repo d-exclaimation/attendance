@@ -23,7 +23,7 @@ The idea is that the Server will specify a specific schema and allowed operation
 
 ## Client
 
-The client will be built with `React` (SPA). It will be using `Tailwind` and `AtlasKit` to make the components. To connect to the GraphQL API, I will be using `urql` instead of `apollo-client`, because I thought it will be easier to use for something minimal which is what I am using (will be considering migrating to `apollo-client` when I need more features).
+The client will be built with `React` (SPA). It will be using `Tailwind` and `AtlasKit` to make the components. To connect to the GraphQL API, I will be using `React-Query` instead of `apollo-client`, because I thought it will be easier to use for something minimal which is what I am using (will be considering migrating to `apollo-client` when I need more features).
 
 | Name     | Usage                           | Reason                                                           |
 | -------- | ------------------------------- | ---------------------------------------------------------------- |
