@@ -30,7 +30,7 @@ The client will be built with `React` (SPA). It will be using `Tailwind` and `At
 | React    | Single Page Application Library | Allow for builing Single page, interactive UI/UX with Javascript |
 | Tailwind | CSS Utilities Library           | Allow for better and cleaner design                              |
 | AtlasKit | Fully developeed components     | Allow for better UI without too much time                        |
-| urql     | Minimal GraphQL Client          | Allow getting information to GraphQL Server                      |
+| React-Query-Graphql     | Minimal HTTP Client          | Allow getting information to GraphQL Server                      |
 
 ## Server & Client response cycle
 
