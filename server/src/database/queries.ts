@@ -61,7 +61,7 @@ export async function monthlyAttendance(
   const [year, month] = [now.getFullYear(), now.getMonth() + offset];
   const [thisMonth, nextMonth] = [
     new Date(year, month, 1),
-    new Date(year, month + 1, 0),
+    new Date(year, month + 1, 1),
   ];
   try {
     return await db.attendance.findMany({
