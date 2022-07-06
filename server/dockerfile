@@ -7,7 +7,7 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
 
-RUN yarn install --network-concurrency 1 --production
+RUN yarn install --production
 
 COPY . .
 
