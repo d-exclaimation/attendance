@@ -8,7 +8,7 @@ COPY yarn.lock ./
 COPY prisma ./prisma/
 
 RUN npm install typescript -g 
-RUN yarn install --network-concurrency 1 --production
+RUN yarn install --network-concurrency 1 
 
 COPY . .
 
