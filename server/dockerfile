@@ -1,4 +1,4 @@
-FROM node:current-alpine3.11 as builder
+FROM node:current as builder
 
 RUN mkdir /app
 WORKDIR /app
@@ -7,7 +7,7 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
 
-RUN yarn install --production --network-concurrency 1
+RUN yarn install --network-concurrency 1 --production
 
 COPY . .
 
