@@ -11,8 +11,6 @@ RUN yarn install --network-concurrency 1
 
 COPY . .
 
-RUN yarn build
-
 FROM node:current-alpine3.11
 
 COPY --from=builder /app/node_modules ./node_modules

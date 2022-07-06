@@ -98,7 +98,7 @@ export const unsignToken = async <T extends object>(
   const { jwtSecret } = artifacts;
   const res: Try<JwtPayload> = await new Promise((resolve) =>
     jwt.verify(token, jwtSecret, (err, result) => {
-      if (err || !result) resolve(Failure(err));
+      if (err || !result || typeof result === "string") resolve(Failure(err));
       else resolve(Ok(result));
     })
   );
@@ -136,7 +136,7 @@ export const refreshCredentials = async (
   const { refreshSecret, adminPassword } = artifacts;
   const res: Try<JwtPayload> = await new Promise((resolve) =>
     jwt.verify(token, refreshSecret, (err, result) => {
-      if (err || !result) resolve(Failure(err));
+      if (err || !result || typeof result === "string") resolve(Failure(err));
       else resolve(Ok(result));
     })
   );
