@@ -4,3 +4,6 @@ node_modules
 
 # Keep dist out of git repository
 dist/
+
+# Keep yarn stuff out
+.yarn/
