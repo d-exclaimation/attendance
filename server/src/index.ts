@@ -35,6 +35,9 @@ async function main() {
     introspection: !__prod__,
     context: async (ctx): Promise<Context> => applyMiddleware(ctx, prisma),
     validationRules: [depthLimit(3)],
+    plugins: [
+      
+    ]
   });
 
   // This part will apply GraphQL on the request,
