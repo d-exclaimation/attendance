@@ -34,4 +34,7 @@ RUN yarn install --production
 # Set the Node.js environment
 ENV NODE_ENV production
 
+# Run prisma generate
+RUN yarn generate
+
 CMD [ "yarn", "start" ]
