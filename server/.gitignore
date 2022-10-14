@@ -7,3 +7,4 @@ dist/
 
 # Keep yarn stuff out
 .yarn/
+.yarnrc.yml
