@@ -11,10 +11,11 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import depthLimit from "graphql-depth-limit";
 import { createServer } from "http";
-import { __port__, __prod__ } from "./constant/environment";
+import { __port__ } from "./constant/environment";
 import { Context } from "./context";
 import { applyMiddleware } from "./middlewares/applyMiddleware";
 import { schema } from "./schema";
+import { AllowIntrospection } from "./utils/validationRules/AllowIntrospection";
 
 async function main() {
   const prisma = new PrismaClient({
@@ -32,11 +33,11 @@ async function main() {
 
   const server = new ApolloServer({
     schema,
-    introspection: !__prod__,
+    introspection: true,
     context: async (ctx): Promise<Context> => applyMiddleware(ctx, prisma),
     validationRules: [depthLimit(3)],
     plugins: [
-      
+        AllowIntrospection
     ]
   });
 
@@ -55,6 +56,19 @@ async function main() {
         "att-zentax.netlify.app",
         "https://att-zentax.netlify.app",
       ],
+      allowedHeaders: [
+        "Authorization", 
+        "Content-Type", 
+        "Proxy-Authorization", 
+        "Sec-WebSocket-Protocol", 
+        "User-Agent",
+        "X-Requested-With", 
+        "apollographql-client-name", 
+        "apollographql-client-version",
+
+        // Custom headers allowed through cors
+        "Intro-Key", 
+      ]
     },
   });
 
