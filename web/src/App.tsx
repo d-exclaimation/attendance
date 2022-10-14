@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthContext, useAuthProvider } from "./auth/useAuth";
 import Panel from "./components/admin/Panel";
 import Content from "./components/app/Content";
@@ -19,26 +19,26 @@ const App: React.FC = () => {
     <Router>
       <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
         <AuthContext.Provider value={auth}>
-          <Switch>
-            <Route exact path="/app">
-              <Content />
-            </Route>
-            <Route exact path="/signup">
+          <Routes>
+            <Route path="/app" element={
+              <Content/>
+            }/>
+            <Route path="/signup" element={
               <Signup />
-            </Route>
-            <Route exact path="/login">
+            }/>
+            <Route path="/login" element={
               <Login />
-            </Route>
-            <Route exact path="/admin">
+            }/>
+            <Route path="/admin" element={
               <Panel />
-            </Route>
-            <Route exact path="/">
+            }/>
+            <Route path="/" element={
               <MainScreen />
-            </Route>
-            <Route path="*">
+            }/>
+            <Route path="*" element={
               <NotFound />
-            </Route>
-          </Switch>
+            } />
+          </Routes>
         </AuthContext.Provider>
       </div>
     </Router>

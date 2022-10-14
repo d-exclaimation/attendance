@@ -12,6 +12,7 @@ type Props = {
   value: string;
   label?: string;
   bind: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  children?: React.ReactNode
 };
 
 const MagicInput: React.FC<Props> = ({

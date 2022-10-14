@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 08:08.
 //
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 /**
  * A wrapper hook for handling redirect
@@ -15,10 +15,10 @@ import { useHistory } from "react-router-dom";
  * @returns A function to perform thread / async -safe redirection.
  */
 export function useRedirect() {
-  const h = useHistory();
+  const nav = useNavigate();
   const redirect = useCallback<(location: string) => void>(
-    (location: string) => setTimeout(() => h.push(location), 0),
-    [h]
+    (location: string) => setTimeout(() => nav(location), 0),
+    [nav]
   );
   return redirect;
 }

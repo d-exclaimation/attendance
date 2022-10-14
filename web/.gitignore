@@ -6,6 +6,7 @@
 .pnp.js
 /.netlify
 .yarn/
+.env
 
 # testing
 /coverage
