@@ -1,24 +1,37 @@
+# -- Stage 1: Build --
 FROM node:current-alpine3.11 as builder
 
+# Setup workspace
 RUN mkdir /app
 WORKDIR /app
 
+# Setup dependencies management
 COPY package.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
 
+# Install dependencies (slow but not take up too much bandwidth)
 RUN yarn install --network-concurrency 1 
 
+# Copy all source code
 COPY . .
 
+# Generate types and compile
+RUN yarn generate
 RUN yarn build
 
+# -- Stage 2: Deploy --
 FROM node:current-alpine3.11
 
-COPY --from=builder /app/node_modules ./node_modules
+# Grab the important files
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/dist ./dist
 
+# Install production only dependencies
+RUN yarn install --production
+
+# Set the Node.js environment
 ENV NODE_ENV production
 
 CMD [ "yarn", "start" ]
