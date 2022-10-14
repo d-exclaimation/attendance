@@ -20,24 +20,24 @@ const App: React.FC = () => {
       <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
         <AuthContext.Provider value={auth}>
           <Routes>
-            <Route path="/app">
-              <Content />
-            </Route>
-            <Route path="/signup">
+            <Route path="/app" element={
+              <Content/>
+            }/>
+            <Route path="/signup" element={
               <Signup />
-            </Route>
-            <Route path="/login">
+            }/>
+            <Route path="/login" element={
               <Login />
-            </Route>
-            <Route path="/admin">
+            }/>
+            <Route path="/admin" element={
               <Panel />
-            </Route>
-            <Route path="/">
+            }/>
+            <Route path="/" element={
               <MainScreen />
-            </Route>
-            <Route path="*">
+            }/>
+            <Route path="*" element={
               <NotFound />
-            </Route>
+            } />
           </Routes>
         </AuthContext.Provider>
       </div>
