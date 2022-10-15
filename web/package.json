@@ -49,10 +49,10 @@
     ]
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.1.1",
-    "@graphql-codegen/typescript": "2.1.2",
-    "@graphql-codegen/typescript-operations": "2.1.2",
-    "@graphql-codegen/typescript-react-query": "^3.0.1",
+    "@graphql-codegen/cli": "^2.13.7",
+    "@graphql-codegen/typescript": "^2.7.4",
+    "@graphql-codegen/typescript-operations": "^2.5.4",
+    "@graphql-codegen/typescript-react-query": "^4.0.2",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
