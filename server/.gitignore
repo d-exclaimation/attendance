@@ -8,7 +8,6 @@ node_modules
 dist/
 
 # Keep yarn stuff out
-.yarn/
 .yarn/*
 !.yarn/releases
 !.yarn/plugins

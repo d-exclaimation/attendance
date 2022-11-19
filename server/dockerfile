@@ -29,9 +29,6 @@ COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
-# Set yarn versio
-RUN yarn set version classic
-
 # Install production only dependencies
 RUN yarn install --production
 
