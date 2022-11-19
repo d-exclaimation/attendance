@@ -1,5 +1,5 @@
 # -- Stage 1: Build --
-FROM node:current-alpine3.11 as builder
+FROM node:lts as builder
 
 # Setup workspace
 RUN mkdir /app
@@ -10,8 +10,8 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
 
-# Install dependencies (slow but not take up too much bandwidth)
-RUN yarn install --network-concurrency 1 
+# Install dependencies 
+RUN yarn install
 
 # Copy all source code
 COPY . .
@@ -21,13 +21,16 @@ RUN yarn generate
 RUN yarn build
 
 # -- Stage 2: Deploy --
-FROM node:current-alpine3.11
+FROM node:lts
 
 # Grab the important files
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+
+# Set yarn versio
+RUN yarn set version classic
 
 # Install production only dependencies
 RUN yarn install --production
