@@ -5,9 +5,12 @@
 //  Created by d-exclaimation on 8:17 AM.
 //  Copyright © 2021 d-exclaimation. All rights reserved.
 //
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
 import { PrismaClient } from "@prisma/client";
-import { ApolloServer } from "apollo-server-express";
+import { json } from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import depthLimit from "graphql-depth-limit";
 import { createServer } from "http";
@@ -27,26 +30,34 @@ async function main() {
   app.set("proxy", 1);
   app.use(cookieParser());
   app.get("/", (_, res) => {
-    // res.redirect(301, "https://google.com");
     res.redirect(301, "https://att-zentax.netlify.app");
   });
 
-  const server = new ApolloServer({
+  const server = new ApolloServer<Context>({
     schema,
     introspection: true,
-    context: async (ctx): Promise<Context> => applyMiddleware(ctx, prisma),
     validationRules: [depthLimit(3)],
     plugins: [
-        AllowIntrospection
-    ]
+      AllowIntrospection,
+      {
+        async serverWillStart() {
+          await prisma.$connect();
+          return {
+            async serverWillStop() {
+              await prisma.$disconnect();
+            },
+          };
+        },
+      },
+    ],
   });
 
   // This part will apply GraphQL on the request,
   // any middleware that require data directly from request needed to assign before this line
   await server.start();
-  server.applyMiddleware({
-    app,
-    cors: {
+
+  app.use(
+    cors({
       credentials: true,
       origin: [
         "https://studio.apollographql.com",
@@ -57,25 +68,28 @@ async function main() {
         "https://att-zentax.netlify.app",
       ],
       allowedHeaders: [
-        "Authorization", 
-        "Content-Type", 
-        "Proxy-Authorization", 
-        "Sec-WebSocket-Protocol", 
+        "Authorization",
+        "Content-Type",
+        "Proxy-Authorization",
+        "Sec-WebSocket-Protocol",
         "User-Agent",
-        "X-Requested-With", 
-        "apollographql-client-name", 
+        "X-Requested-With",
+        "apollographql-client-name",
         "apollographql-client-version",
 
         // Custom headers allowed through cors
-        "Intro-Key", 
-      ]
-    },
-  });
+        "Intro-Key",
+      ],
+    }),
+    json(),
+    expressMiddleware(server, {
+      context: async (ctx): Promise<Context> => applyMiddleware(ctx, prisma),
+    })
+  );
 
   httpServer.listen(__port__, () => {
     console.log(`Server starting at http://localhost:${__port__}`);
   });
-  await prisma.$disconnect();
 }
 
 main().catch(console.error);
