@@ -5,22 +5,22 @@ FROM node:16 as builder
 RUN mkdir /app
 WORKDIR /app
 
-RUN yarn set version classic
+RUN npm install -g pnpm
 
 # Setup dependencies management
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
 # Install dependencies 
-RUN yarn install
+RUN pnpm install
 
 # Copy all source code
 COPY . .
 
 # Generate types and compile
-RUN yarn generate
-RUN yarn build
+RUN pnpm generate
+RUN pnpm build
 
 # -- Stage 2: Deploy --
 FROM node:16
@@ -32,12 +32,12 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
 # Install production only dependencies
-RUN yarn install --production
+RUN pnpm install --prod
 
 # Set the Node.js environment
 ENV NODE_ENV production
 
 # Run prisma generate
-RUN yarn generate
+RUN pnpm generate
 
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "run", "start" ]
