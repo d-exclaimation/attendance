@@ -1,5 +1,5 @@
 # -- Stage 1: Build --
-FROM node:lts as builder
+FROM node:16 as builder
 
 # Setup workspace
 RUN mkdir /app
@@ -23,7 +23,7 @@ RUN yarn generate
 RUN yarn build
 
 # -- Stage 2: Deploy --
-FROM node:lts
+FROM node:16
 
 # Grab the important files
 COPY --from=builder /app/package*.json ./
