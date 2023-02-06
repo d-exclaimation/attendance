@@ -42,10 +42,10 @@ export const convertDate = (entryAt: Date, leaveAt: Date) => {
   if (Math.floor(diffHour) > 0) {
     return `${Math.floor(diffHour)} jam, ${Math.floor(
       diffMinutes % 60
-    )} menit, ${Math.floor(diffSeconds % 3600)} detik`;
+    )} menit, ${Math.floor(diffSeconds % 60)} detik`;
   } else if (Math.floor(diffMinutes) > 0) {
     return `${Math.floor(diffMinutes)} menit, ${Math.floor(
-      diffSeconds % 3600
+      diffSeconds % 60
     )} detik`;
   } else {
     return `${Math.floor(diffSeconds)} detik`;
