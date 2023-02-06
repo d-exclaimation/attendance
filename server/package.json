@@ -9,7 +9,7 @@
     "build": "tsc",
     "compile": "rm -rf dist/ && tsc",
     "recompile": "tsc --watch",
-    "generate": "prisma generate"
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "d-exclaimation",
