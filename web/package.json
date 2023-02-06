@@ -2,33 +2,12 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@atlaskit/flag": "^14.7.1",
-    "@atlaskit/icon": "^21.11.0",
-    "@craco/craco": "^6.2.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
-    "graphql": "^16.6.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-query": "^3.39.2",
-    "react-router-dom": "^6.4.2",
-    "react-scripts": "^5.0.1",
-    "typescript": "^4.8.4"
-  },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build; echo \"/* /index.html 200\" > ./build/_redirects",
-    "test": "craco test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc; vite build: echo \"/* /index.html 200\" > ./build/_redirects",
+    "serve": "vite preview",
     "gen": "graphql-codegen --config codegen.yml",
-    "deploy": "netlify deploy --prod",
-    "build:deploy": "craco build; echo \"/* /index.html 200\" > ./build/_redirects; netlify deploy --prod"
+    "deploy": "netlify deploy --prod"
   },
   "eslintConfig": {
     "extends": [
@@ -48,15 +27,30 @@
       "last 1 safari version"
     ]
   },
+  "dependencies": {
+    "@atlaskit/flag": "^14.7.1",
+    "@atlaskit/icon": "^21.11.0",
+    "graphql": "^16.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.2",
+    "react-router-dom": "^6.4.2"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.13.7",
     "@graphql-codegen/typescript": "^2.7.4",
     "@graphql-codegen/typescript-operations": "^2.5.4",
     "@graphql-codegen/typescript-react-query": "^4.0.2",
+    "@types/node": "^12.0.0",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^3.1.0",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.8.4",
+    "vite": "^4.1.1"
   },
   "packageManager": "yarn@1.22.19"
 }
