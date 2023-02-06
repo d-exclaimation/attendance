@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "tsc; vite build: echo \"/* /index.html 200\" > ./build/_redirects",
+    "dev": "vite",
+    "build": "tsc; vite build; echo \"/* /index.html 200\" > ./build/_redirects",
     "serve": "vite preview",
     "gen": "graphql-codegen --config codegen.yml",
     "deploy": "netlify deploy --prod"
@@ -50,7 +50,8 @@
     "postcss": "^8.4.18",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.4",
-    "vite": "^4.1.1"
+    "vite": "^4.1.1",
+    "vite-plugin-svgr": "^2.4.0"
   },
   "packageManager": "yarn@1.22.19"
 }

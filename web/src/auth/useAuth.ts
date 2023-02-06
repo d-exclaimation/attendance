@@ -73,7 +73,7 @@ export function useAuthProvider(): Auth {
     staleTime: 1000 * 60 * 30,
   });
 
-  const cronRef = useRef<NodeJS.Timeout | number | null>(null);
+  const cronRef = useRef<number | null>(null);
 
   const updateAuth = useCallback(
     (expireAt: string, token: string) => {
