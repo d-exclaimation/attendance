@@ -7,6 +7,7 @@
 
 import { GraphQLError } from "graphql";
 import React, { useCallback } from "react";
+import { useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import { useLoginMutation } from "../../graphql/api";
@@ -17,6 +18,7 @@ import MagicInput from "../semantic/MagicInput";
 import MagicToast from "../semantic/MagicToast";
 
 const Login: React.FC = () => {
+  const queryClient = useQueryClient();
   const { updateAuth } = useAuth();
   const redirect = useRedirect();
   const { val: name, bind: bName, clear: cName } = useFormBind();
@@ -53,6 +55,7 @@ const Login: React.FC = () => {
             status: "success",
           });
           updateAuth(expireAt, token);
+          queryClient.invalidateQueries("Status");
           return done(user.name);
         case "UserNotFound":
           return toast({
